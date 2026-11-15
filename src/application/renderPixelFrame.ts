@@ -15,6 +15,9 @@ export interface RenderOptions {
   readonly yaw: number;
   readonly pitch?: number;
   readonly zoom?: number;
+  /** World point at the centre of the frame, and how many world units the frame width spans. */
+  readonly target?: readonly [number, number, number];
+  readonly span?: number;
 }
 
 /**
@@ -26,8 +29,8 @@ export function renderPixelFrame(splats: readonly Splat[], palette: Palette, opt
   const camera: Camera = {
     yaw: opts.yaw,
     pitch: opts.pitch ?? 0.18,
-    target: [-0.7, 2.0, 0],
-    pixelsPerUnit: (width / 11) * (opts.zoom ?? 1),
+    target: opts.target ?? [-1.2, 2.1, 0],
+    pixelsPerUnit: (width / (opts.span ?? 12.6)) * (opts.zoom ?? 1),
     width,
     height,
   };
@@ -66,12 +69,17 @@ export function renderPixelFrame(splats: readonly Splat[], palette: Palette, opt
   // Quantise to the palette, hard-threshold alpha: this is what makes it pixel art.
   const colors = paletteColors(palette);
   const data = new Uint8ClampedArray(width * height * 4);
+  const water = new Uint8Array(width * height);
+  const isWater = (c: readonly number[]) => palette.extras.some((e) => e[0] === c[0] && e[1] === c[1] && e[2] === c[2]);
   const solid = (i: number) => alpha[i]! >= 0.5;
+  // Only the creature casts an outline; rain and puddle stay outline-free.
+  const caster = (i: number) => solid(i) && !water[i];
   for (let i = 0; i < width * height; i++) {
     if (!solid(i)) continue;
     const a = alpha[i]!;
     const c = nearestColor(colors, rgb[i * 3]! / a, rgb[i * 3 + 1]! / a, rgb[i * 3 + 2]! / a);
     data.set([c[0], c[1], c[2], 255], i * 4);
+    if (isWater(c)) water[i] = 1;
   }
   // 1px outline around the silhouette.
   const o = palette.outline;
@@ -80,7 +88,7 @@ export function renderPixelFrame(splats: readonly Splat[], palette: Palette, opt
       const i = y * width + x;
       if (solid(i)) continue;
       const near =
-        (x > 0 && solid(i - 1)) || (x < width - 1 && solid(i + 1)) || (y > 0 && solid(i - width)) || (y < height - 1 && solid(i + width));
+        (x > 0 && caster(i - 1)) || (x < width - 1 && caster(i + 1)) || (y > 0 && caster(i - width)) || (y < height - 1 && caster(i + width));
       if (near) data.set([o[0], o[1], o[2], 255], i * 4);
     }
   }

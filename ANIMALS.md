@@ -1,6 +1,10 @@
 # 🐾 Future animals
 
-The dino proved the recipe: ellipsoid shells → seeded gaussians → cel-shaded palette ramps → pixel snap. Next up, roughly in order of how much new machinery each one needs.
+The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians → cel-shaded palette ramps → pixel snap. Next up, roughly in order of how much new machinery each one needs.
+
+## Done
+- [x] **T-Rex**
+- [x] **Giant squid in the rain** (rig groups for arms, fins and falling rain)
 
 ## Same skeleton, new silhouettes (easy)
 - [ ] **Stegosaurus**: the dino's cousin; big diamond back plates and a spiked tail.
@@ -12,7 +16,7 @@ The dino proved the recipe: ellipsoid shells → seeded gaussians → cel-shaded
 
 ## New body plans (medium)
 - [ ] **Axolotl**: feathery external gills (thin, elongated splats).
-- [ ] **Octopus**: eight wavy tentacles driven by `pose(t)`.
+- [ ] **Octopus**: the squid's arm rig, minus the mantle; add suckers and colour-shifting skin.
 - [ ] **Turtle**: domed shell with a hex-pattern colour rule.
 - [ ] **Penguin**: tuxedo palette, waddle animation.
 - [ ] **Fox**: tail as big as the body; two-tone fur ramps.
@@ -34,7 +38,6 @@ The dino proved the recipe: ellipsoid shells → seeded gaussians → cel-shaded
 
 ## Engine upgrades the zoo will need
 - Rotated gaussians (full quaternion rotation in the 3DGS export too).
-- Generalised `Creature` definition (parts, ramps, pose function) so each animal is data, not code.
 - Additive/emissive blend mode for glow.
 - Multi-creature scenes and a ground shadow.
 - GIF / sprite-sheet animation export.

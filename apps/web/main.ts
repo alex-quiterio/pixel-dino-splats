@@ -1,16 +1,18 @@
-import { pose } from "@domain/animation";
-import { buildDinoScene } from "@application/buildDinoScene";
-import { renderPixelFrame } from "@application/renderPixelFrame";
+import { buildScene } from "@application/buildScene";
+import { renderScene } from "@application/renderScene";
+import { CREATURES } from "@domain/creatures";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = $<HTMLCanvasElement>("view");
 const ctx = canvas.getContext("2d")!;
+const frameEl = $("frame");
 
+let creature = CREATURES[0]!;
 let seed = 0;
-let scene = buildDinoScene(seed);
-let size = 96;
+let scene = buildScene(creature, seed);
+let size = 128;
 let yaw = 0.35;
-let pitch = 0.18;
+let pitch = creature.view.pitch;
 let zoom = 1;
 let spinning = true;
 let dragging = false;
@@ -20,10 +22,15 @@ let lastY = 0;
 function labels() {
   $("count").textContent = String(scene.splats.length);
   $("name").textContent = `colorway: ${scene.palette.name}`;
+  $("title").textContent = `pixel ${creature.name.toLowerCase()} splats`;
+  frameEl.dataset.creature = creature.id;
+  for (const b of document.querySelectorAll<HTMLButtonElement>("[data-creature]")) {
+    if (b.id !== "frame") b.setAttribute("aria-pressed", String(b.dataset.creature === creature.id));
+  }
 }
 
 function draw(t: number) {
-  const frame = renderPixelFrame(pose(scene.splats, t), scene.palette, { width: size, height: size, yaw, pitch, zoom });
+  const frame = renderScene(scene, { size, yaw, pitch, zoom, t });
   canvas.width = size;
   canvas.height = size;
   ctx.putImageData(new ImageData(new Uint8ClampedArray(frame.data), size, size), 0, 0);
@@ -37,6 +44,7 @@ function tick(now: number) {
   requestAnimationFrame(tick);
 }
 
+const clampPitch = (p: number) => Math.min(1.3, Math.max(-0.3, p));
 canvas.addEventListener("pointerdown", (e) => {
   dragging = true;
   lastX = e.clientX;
@@ -46,7 +54,7 @@ canvas.addEventListener("pointerdown", (e) => {
 canvas.addEventListener("pointermove", (e) => {
   if (!dragging) return;
   yaw += (e.clientX - lastX) * 0.012;
-  pitch = Math.min(1.3, Math.max(-0.3, pitch + (e.clientY - lastY) * 0.01));
+  pitch = clampPitch(pitch + (e.clientY - lastY) * 0.01);
   lastX = e.clientX;
   lastY = e.clientY;
 });
@@ -59,7 +67,7 @@ $("spin").addEventListener("click", (e) => {
   (e.currentTarget as HTMLElement).setAttribute("aria-pressed", String(spinning));
 });
 $("reroll").addEventListener("click", () => {
-  scene = buildDinoScene(++seed);
+  scene = buildScene(creature, ++seed);
   labels();
 });
 $<HTMLSelectElement>("res").addEventListener("change", (e) => {
@@ -73,16 +81,32 @@ const setZoom = (z: number) => {
 };
 zoomInput.addEventListener("input", () => setZoom(Number(zoomInput.value)));
 canvas.addEventListener("wheel", (e) => { e.preventDefault(); setZoom(zoom - e.deltaY * 0.001); }, { passive: false });
-$("reset").addEventListener("click", () => { yaw = 0.35; pitch = 0.18; setZoom(1); });
+const resetView = () => { yaw = 0.35; pitch = creature.view.pitch; setZoom(1); };
+$("reset").addEventListener("click", resetView);
 window.addEventListener("keydown", (e) => {
   const step = 0.12;
   if (e.key === "ArrowLeft") yaw -= step;
   else if (e.key === "ArrowRight") yaw += step;
-  else if (e.key === "ArrowUp") pitch = Math.min(1.3, pitch + step);
-  else if (e.key === "ArrowDown") pitch = Math.max(-0.3, pitch - step);
+  else if (e.key === "ArrowUp") pitch = clampPitch(pitch + step);
+  else if (e.key === "ArrowDown") pitch = clampPitch(pitch - step);
   else if (e.key === "+" || e.key === "=") setZoom(zoom + 0.1);
   else if (e.key === "-") setZoom(zoom - 0.1);
 });
+
+const picker = $("picker");
+for (const c of CREATURES) {
+  const b = document.createElement("button");
+  b.textContent = c.name;
+  b.dataset.creature = c.id;
+  b.addEventListener("click", () => {
+    creature = c;
+    seed = 0;
+    scene = buildScene(creature, seed);
+    resetView();
+    labels();
+  });
+  picker.append(b);
+}
 
 labels();
 requestAnimationFrame(tick);

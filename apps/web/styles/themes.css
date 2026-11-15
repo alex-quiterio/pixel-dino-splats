@@ -1,0 +1,4 @@
+/* Per-creature stage backgrounds */
+.frame[data-creature="squid"] {
+  background: #04060d;
+}

@@ -1,29 +1,37 @@
 import { expect, test } from "bun:test";
-import { buildDinoScene } from "@application/buildDinoScene";
-import { renderPixelFrame } from "@application/renderPixelFrame";
+import { buildScene } from "@application/buildScene";
+import { renderScene } from "@application/renderScene";
+import { CREATURES } from "@domain/creatures";
 import { paletteColors } from "@domain/palette";
 import { encodePly } from "@infrastructure/ply/encodePly";
 import { encodePng } from "@infrastructure/png/encodePng";
 
-test("same seed grows the same dino", () => {
-  expect(buildDinoScene(1).splats).toEqual(buildDinoScene(1).splats);
-});
+for (const creature of CREATURES) {
+  test(`${creature.id}: same seed grows the same creature`, () => {
+    expect(buildScene(creature, 1).splats).toEqual(buildScene(creature, 1).splats);
+  });
 
-test("frames only contain palette colours (true pixel art)", () => {
-  const scene = buildDinoScene(0);
-  const f = renderPixelFrame(scene.splats, scene.palette, { width: 64, height: 64, yaw: 0.5 });
-  const allowed = new Set(paletteColors(scene.palette).map((c) => c.join(",")));
-  let opaque = 0;
-  for (let i = 0; i < f.data.length; i += 4) {
-    if (f.data[i + 3] === 0) continue;
-    opaque++;
-    expect(allowed.has(`${f.data[i]},${f.data[i + 1]},${f.data[i + 2]}`)).toBe(true);
-  }
-  expect(opaque).toBeGreaterThan(300);
-});
+  test(`${creature.id}: frames only contain palette colours (true pixel art)`, () => {
+    const scene = buildScene(creature, 0);
+    const f = renderScene(scene, { size: 64, yaw: 0.5, t: 0.7 });
+    const allowed = new Set(paletteColors(scene.palette).map((c) => c.join(",")));
+    let opaque = 0;
+    for (let i = 0; i < f.data.length; i += 4) {
+      if (f.data[i + 3] === 0) continue;
+      opaque++;
+      expect(allowed.has(`${f.data[i]},${f.data[i + 1]},${f.data[i + 2]}`)).toBe(true);
+    }
+    expect(opaque).toBeGreaterThan(300);
+  });
+
+  test(`${creature.id}: pose is a pure function of time`, () => {
+    const { splats } = buildScene(creature, 0);
+    expect(creature.pose(splats, 1.3)).toEqual(creature.pose(splats, 1.3));
+  });
+}
 
 test("ply has header + 17 floats per splat", () => {
-  const scene = buildDinoScene(0);
+  const scene = buildScene(CREATURES[0]!, 0);
   const ply = encodePly(scene.splats);
   const text = new TextDecoder().decode(ply.subarray(0, 600));
   expect(text.startsWith("ply\n")).toBe(true);

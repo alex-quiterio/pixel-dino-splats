@@ -8,4 +8,6 @@ export interface Splat {
   readonly scale: Vec3;
   readonly color: Rgb;
   readonly opacity: number;
+  /** Optional skinning-lite: which limb/element this splat belongs to and how far along it (0..1). */
+  readonly rig?: { readonly group: number; readonly weight: number };
 }

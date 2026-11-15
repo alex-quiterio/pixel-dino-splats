@@ -9,16 +9,18 @@ export interface Palette {
   readonly outline: Rgb;
   readonly eyeWhite: Rgb;
   readonly pupil: Rgb;
+  /** Extra scene colours (e.g. water for the squid's puddle and rain). */
+  readonly extras: readonly Rgb[];
 }
 
-const hex = (h: string): Rgb => [
+export const hex = (h: string): Rgb => [
   parseInt(h.slice(1, 3), 16),
   parseInt(h.slice(3, 5), 16),
   parseInt(h.slice(5, 7), 16),
 ];
-const ramp = (...hs: string[]) => hs.map(hex);
+export const ramp = (...hs: string[]) => hs.map(hex);
 
-const common = { outline: hex("#1b1226"), eyeWhite: hex("#fff8e7"), pupil: hex("#14081c") };
+const common = { outline: hex("#1b1226"), eyeWhite: hex("#fff8e7"), pupil: hex("#14081c"), extras: [] as Rgb[] };
 
 export const PALETTES: readonly Palette[] = [
   {
@@ -60,6 +62,7 @@ export const paletteColors = (p: Palette): Rgb[] => [
   p.outline,
   p.eyeWhite,
   p.pupil,
+  ...p.extras,
 ];
 
 export function nearestColor(colors: readonly Rgb[], r: number, g: number, b: number): Rgb {

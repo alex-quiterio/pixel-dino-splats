@@ -3,16 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pixel Dino Splats</title>
+    <title>Pixel Splat Zoo</title>
     <link rel="stylesheet" href="./styles/base.css" />
     <link rel="stylesheet" href="./styles/layout.css" />
     <link rel="stylesheet" href="./styles/controls.css" />
+    <link rel="stylesheet" href="./styles/themes.css" />
   </head>
   <body>
     <main class="stage">
-      <h1>pixel dino splats</h1>
+      <h1 id="title">pixel splats</h1>
       <p class="sub"><span id="count">0</span> gaussians · drag to rotate &amp; tilt · scroll or slide to zoom</p>
-      <div class="frame"><canvas id="view" aria-label="Pixel-art dinosaur made of gaussian splats"></canvas></div>
+      <div id="picker" class="controls" role="group" aria-label="Creature"></div>
+      <div class="frame" id="frame"><canvas id="view" aria-label="Pixel-art creature made of gaussian splats"></canvas></div>
       <div class="controls">
         <button id="spin" aria-pressed="true">spin</button>
         <button id="reroll">new colorway</button>
@@ -22,8 +24,8 @@
           <select id="res">
             <option value="48">48</option>
             <option value="64">64</option>
-            <option value="96" selected>96</option>
-            <option value="128">128</option>
+            <option value="96">96</option>
+            <option value="128" selected>128</option>
           </select>
         </label>
       </div>
