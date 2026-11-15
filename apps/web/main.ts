@@ -30,6 +30,8 @@ function labels() {
 }
 
 let lastPixelText = "";
+let smoothMs = 0;
+let lastMsTick = -1;
 function showPixels(data: Uint8ClampedArray) {
   let lit = 0;
   for (let i = 3; i < data.length; i += 4) if (data[i] !== 0) lit++;
@@ -41,11 +43,17 @@ function showPixels(data: Uint8ClampedArray) {
 }
 
 function draw(t: number) {
+  const t0 = performance.now();
   const frame = renderScene(scene, { size, yaw, pitch, zoom, t });
   canvas.width = size;
   canvas.height = size;
   ctx.putImageData(new ImageData(new Uint8ClampedArray(frame.data), size, size), 0, 0);
   showPixels(frame.data);
+  smoothMs = smoothMs * 0.9 + (performance.now() - t0) * 0.1;
+  if (Math.round(t * 2) !== lastMsTick) {
+    lastMsTick = Math.round(t * 2);
+    $("ms").textContent = `${Math.round(smoothMs)} ms/frame`;
+  }
 }
 
 let prev = performance.now();

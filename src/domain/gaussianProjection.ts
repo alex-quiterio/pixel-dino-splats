@@ -59,7 +59,7 @@ export function projectSplat(splat: Splat, R: Mat3, cam: Camera): ProjectedSplat
     y: cam.height / 2 - vy * cam.pixelsPerUnit,
     depth,
     conic: [c / det, -b / det, a / det],
-    radius: Math.ceil(3 * Math.sqrt(Math.max(a, c))),
+    radius: Math.ceil(2.6 * Math.sqrt(Math.max(a, c))),
     color: splat.color,
     opacity: splat.opacity,
   };

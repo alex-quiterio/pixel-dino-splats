@@ -33,7 +33,7 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 - **Alive**: the T-Rex snarls with a glowing eye and roars; the squid waves its arms in a rainy puddle; the stag sheds drifting spores past pulsing glow-orbs; the cats swish their tails, twitch their ears and blink. All motion is a pure `pose(splats, t)` function.
 - **Detailed**: tiger stripes, scale speckle, brow ridges, teeth, claws and slit-pupil eyes.
 - **Colourways** picked by seed, per creature (see above).
-- **Interactive web viewer** (GitHub Pages): pick a creature, drag to rotate and tilt, scroll/slider zoom, arrow keys, reset view, toggle spin, reroll colourways, switch between 48 / 64 / 96 / 128 px.
+- **Interactive web viewer** (GitHub Pages): pick a creature, drag to rotate and tilt, scroll/slider zoom, arrow keys, reset view, toggle spin, reroll colourways, switch between 48 and 512 px (48 / 64 / 96 / 128 / 192 / 256 / 384 / 512, with a live ms-per-frame readout).
 - **Exports**: turntable sprite-sheet PNG, plus a standard 3D Gaussian Splatting `.ply` you can open in any splat viewer for the non-pixel version.
 - **Deterministic**: same seed, same dino, every time.
 
