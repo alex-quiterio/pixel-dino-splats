@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pixel Dino Splats</title>
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/layout.css" />
+    <link rel="stylesheet" href="./styles/controls.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <h1>pixel dino splats</h1>
+      <p class="sub"><span id="count">0</span> gaussians · drag to rotate</p>
+      <div class="frame"><canvas id="view" aria-label="Pixel-art dinosaur made of gaussian splats"></canvas></div>
+      <div class="controls">
+        <button id="spin" aria-pressed="true">spin</button>
+        <button id="reroll">new colorway</button>
+        <label>pixels
+          <select id="res">
+            <option value="48">48</option>
+            <option value="64">64</option>
+            <option value="96" selected>96</option>
+            <option value="128">128</option>
+          </select>
+        </label>
+      </div>
+      <p class="name" id="name"></p>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

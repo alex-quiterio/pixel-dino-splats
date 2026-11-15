@@ -1,0 +1,25 @@
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 16px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.frame {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(#3a2a58, #6b3f6e 70%, #2a1d3a 70%);
+  border: 4px solid var(--ink);
+  box-shadow: 6px 6px 0 #0d0814;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  touch-action: none;
+  cursor: grab;
+}
+canvas:active { cursor: grabbing; }

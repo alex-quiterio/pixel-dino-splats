@@ -1,0 +1,21 @@
+{
+  "name": "pixel-dino-splats",
+  "version": "0.1.0",
+  "description": "A pixel-art dinosaur made of 3D gaussian splats, rendered in software at tiny resolutions.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "cli:export": "bun apps/cli/export.ts",
+    "web:build": "bun apps/web/build.ts",
+    "web:start": "bun apps/web/server.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "eslint": "^10.15.0",
+    "typescript": "6",
+    "typescript-eslint": "^8.72.2"
+  }
+}
