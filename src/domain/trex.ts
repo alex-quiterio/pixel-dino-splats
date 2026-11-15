@@ -3,7 +3,7 @@ import type { Palette, Rgb } from "@domain/palette";
 import type { Splat } from "@domain/splat";
 import { dot, normalize, type Vec3 } from "@domain/vec3";
 
-type Role = "skin" | "plate" | "jaw" | "brow";
+type Role = "skin" | "plate" | "jaw" | "brow" | "mouth";
 interface Part {
   readonly center: Vec3;
   readonly radii: Vec3;
@@ -32,21 +32,25 @@ function buildParts(): Part[] {
     // neck
     P([1.55, 3.05, 0], [0.55, 0.62, 0.5]),
     P([1.95, 3.5, 0], [0.52, 0.55, 0.45]),
-    // skull
-    P([2.55, 3.72, 0], [0.68, 0.58, 0.56]),
-    P([3.25, 3.58, 0], [0.7, 0.36, 0.38]),
-    P([3.8, 3.52, 0], [0.3, 0.26, 0.3]),
-    P([2.75, 3.38, 0], [0.5, 0.2, 0.55]), // cheeks
+    // skull: big and heavy
+    P([2.6, 3.75, 0], [0.78, 0.66, 0.62]),
+    P([3.35, 3.6, 0], [0.8, 0.4, 0.4]),
+    P([3.95, 3.55, 0], [0.32, 0.28, 0.3]),
+    P([2.8, 3.55, 0], [0.5, 0.2, 0.58]), // cheeks, above the mouth line
+    P([3.4, 3.4, 0], [0.8, 0.1, 0.33]), // upper lip: its lower edge carries the teeth
     // lower jaw
-    P([3.15, 3.0, 0], [0.78, 0.17, 0.3], "jaw"),
-    P([2.65, 3.05, 0], [0.45, 0.22, 0.42], "jaw"),
-    P([3.75, 3.08, 0], [0.22, 0.12, 0.2], "jaw"),
+    P([3.25, 3.02, 0], [0.85, 0.17, 0.3], "jaw"),
+    P([2.7, 3.07, 0], [0.45, 0.22, 0.42], "jaw"),
+    P([3.95, 3.1, 0], [0.22, 0.12, 0.2], "jaw"),
+    P([3.3, 3.3, 0], [0.85, 0.3, 0.05], "mouth"), // dark red inside of the mouth
+    P([3.1, 3.12, 0], [0.62, 0.1, 0.2], "mouth"), // tongue
   ];
   for (const side of [-1, 1]) {
     parts.push(
       // brow ridge, a bump above each eye
-      P([2.85, 4.1, side * 0.36], [0.3, 0.12, 0.17], "brow"),
-      P([3.55, 3.82, side * 0.17], [0.25, 0.08, 0.1], "brow"), // nose bumps
+      P([2.95, 4.08, side * 0.4], [0.4, 0.15, 0.2], "brow"),
+      P([2.5, 4.35, side * 0.3], [0.1, 0.22, 0.1], "plate"), // little horns
+      P([3.7, 3.85, side * 0.17], [0.25, 0.08, 0.1], "brow"), // nose bumps
       // leg: thigh, shin, metatarsus, foot
       P([-0.95, 1.75, side * 0.9], [0.78, 1.0, 0.45]),
       P([-0.55, 1.0, side * 0.85], [0.36, 0.5, 0.3]),
@@ -67,8 +71,8 @@ function buildParts(): Part[] {
   for (let i = 0; i < 15; i++) {
     const x = 2.0 - i * 0.5;
     const y = x > -1.6 ? 3.5 - Math.abs(x - 0.3) * 0.12 : 2.55 - 0.5 * Math.sin(((-2.3 - x) / 4.14) * 1.7) + 0.75 * (1 - (-2.3 - x) / 4.14);
-    const h = i < 3 ? 0.1 : 0.17;
-    parts.push(P([x, y + (x > 1.7 ? -0.25 : 0), 0], [0.14, h, 0.09], "plate"));
+    const h = i < 3 ? 0.14 : 0.24 + 0.1 * Math.sin(i * 1.7) ** 2;
+    parts.push(P([x, y + (x > 1.7 ? -0.22 : 0.08), 0], [0.12, h, 0.08], "plate"));
   }
   return parts;
 }
@@ -82,6 +86,7 @@ const clamp3 = (v: number) => Math.max(0, Math.min(3, v));
 function colorFor(part: Part, p: Vec3, n: Vec3, palette: Palette, phase: number, rng: Rng): Rgb {
   let b = band(n);
   if (part.role === "plate") return palette.plate[b]!;
+  if (part.role === "mouth") return palette.plate[Math.min(b, 1)]!;
   if (part.role === "brow") return palette.body[clamp3(b - 1)]!;
   if (part.role === "jaw" || (n[1] < -0.3 && p[1] < 3.0 && p[0] > -2.2 && p[0] < 2.0)) {
     return palette.belly[rng.next() < 0.08 ? clamp3(b - 1) : b]!;
@@ -126,28 +131,37 @@ export function buildTRex(seed: number, palette: Palette): Splat[] {
     splats.push({ position, scale: [r, r * tall, r], color, opacity: 1 });
   };
   for (const side of [-1, 1]) {
-    // eye: iris, pupil
-    dot3([2.88, 3.86, side * 0.47], 0.12, palette.plate[3]!);
-    dot3([2.95, 3.87, side * 0.5], 0.06, palette.pupil);
-    dot3([2.84, 3.9, side * 0.5], 0.035, palette.eyeWhite);
+    // eye: fiery iris, slit pupil, glint
+    dot3([2.95, 3.86, side * 0.6], 0.17, palette.plate[2]!);
+    dot3([3.02, 3.87, side * 0.74], 0.06, palette.pupil, 2.6);
+    dot3([2.88, 3.93, side * 0.74], 0.035, palette.plate[3]!);
+    // angry slanted brow shadow above the eye, plus a scar across the snout
+    for (let i = 0; i < 6; i++) dot3([2.72 + i * 0.075, 4.12 - i * 0.03, side * (0.68 - i * 0.02)], 0.055, palette.outline);
+    for (let i = 0; i < 5; i++) dot3([3.5 + i * 0.05, 3.72 - i * 0.07, side * 0.36], 0.03, palette.belly[3]!);
     // nostril
-    dot3([3.9, 3.58, side * 0.17], 0.045, palette.pupil);
-    // mouth line
-    for (let i = 0; i < 12; i++) {
-      const x = 2.55 + i * 0.1;
-      dot3([x, MOUTH_Y, side * (0.4 - i * 0.021)], 0.04, palette.outline);
+    dot3([4.08, 3.6, side * 0.17], 0.045, palette.pupil);
+    // mouth line + teeth follow the lip outline
+    const lipZ = (x: number) => 0.33 * Math.sqrt(Math.max(0.12, 1 - ((x - 3.4) / 0.8) ** 2));
+    for (let i = 0; i < 14; i++) {
+      const x = 2.7 + i * 0.1;
+      dot3([x, MOUTH_Y + 0.05, side * (lipZ(x) + 0.08)], 0.045, palette.outline);
     }
-    // teeth: upper row hangs down, lower row points up
-    for (let i = 0; i < 9; i++) {
-      const x = 2.75 + i * 0.12;
-      const z = side * (0.3 - i * 0.022);
-      dot3([x, MOUTH_Y - 0.06, z], 0.045, palette.eyeWhite, 1.7);
-      if (i % 2 === 0) dot3([x + 0.06, MOUTH_Y + 0.02 - 0.02, z * 0.95], 0.035, palette.eyeWhite, 1.4);
+    for (let i = 0; i < 13; i++) {
+      const x = 2.85 + i * 0.1;
+      const z = side * (lipZ(x) + 0.1);
+      const fang = i === 8 || i === 9 ? 3.0 : 2.1;
+      // upper fangs hang from the lip (kept above the jaw hinge so they stay put)
+      dot3([x, MOUTH_Y + 0.07 - (fang - 2) * 0.02, z], 0.06, palette.eyeWhite, fang);
+      // lower teeth ride up with the jaw
+      if (i % 2 === 0 && x < 3.9) dot3([x + 0.05, MOUTH_Y - 0.04, side * (lipZ(x) * 0.8 + 0.05)], 0.05, palette.eyeWhite, 1.9);
     }
     // foot claws
-    for (let c = 0; c < 3; c++) dot3([-0.05 + c * 0.0, 0.05, side * (0.85 + (c - 1) * 0.2)], 0.07, palette.eyeWhite);
+    for (let c = 0; c < 3; c++) {
+      dot3([0.1, 0.07, side * (0.85 + (c - 1) * 0.22)], 0.085, palette.eyeWhite, 1.3);
+      dot3([0.2, 0.04, side * (0.85 + (c - 1) * 0.22)], 0.055, palette.eyeWhite);
+    }
     // arm claws
-    for (let c = 0; c < 2; c++) dot3([1.62, 1.8 - c * 0.04, side * (0.7 + (c - 0.5) * 0.1)], 0.045, palette.eyeWhite);
+    for (let c = 0; c < 2; c++) dot3([1.64 + c * 0.03, 1.78 - c * 0.07, side * (0.7 + (c - 0.5) * 0.12)], 0.05, palette.eyeWhite, 2.2);
   }
   return splats;
 }
