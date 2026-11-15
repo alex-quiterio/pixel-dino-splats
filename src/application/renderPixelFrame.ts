@@ -14,6 +14,7 @@ export interface RenderOptions {
   readonly height: number;
   readonly yaw: number;
   readonly pitch?: number;
+  readonly zoom?: number;
 }
 
 /**
@@ -26,7 +27,7 @@ export function renderPixelFrame(splats: readonly Splat[], palette: Palette, opt
     yaw: opts.yaw,
     pitch: opts.pitch ?? 0.18,
     target: [-0.7, 2.0, 0],
-    pixelsPerUnit: width / 11,
+    pixelsPerUnit: (width / 11) * (opts.zoom ?? 1),
     width,
     height,
   };

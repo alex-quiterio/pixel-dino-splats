@@ -18,13 +18,15 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 
 ---
 
+**🎮 [Live demo →](https://alex-quiterio.github.io/pixel-dino-splats/)** (drag to rotate and tilt, scroll or slide to zoom, arrow keys work too)
+
 ## ✨ Features
 
 - **Real gaussian splatting**: every splat is a 3D gaussian with position, scale, colour and opacity, projected to a 2D conic and alpha-blended back to front.
 - **True pixel art**: output pixels only ever use palette colours, alpha is hard-thresholded, and the silhouette gets a 1px outline. A test enforces it.
 - **Alive**: the tail swishes and the head bobs through a pure `pose(splats, t)` function.
 - **Four colourways** picked by seed: moss, lagoon, grape, ember.
-- **Interactive web viewer**: drag to rotate, toggle spin, reroll colourways, switch between 48 / 64 / 96 / 128 px.
+- **Interactive web viewer** (GitHub Pages): drag to rotate and tilt, scroll/slider zoom, arrow keys, reset view, toggle spin, reroll colourways, switch between 48 / 64 / 96 / 128 px.
 - **Exports**: turntable sprite-sheet PNG, plus a standard 3D Gaussian Splatting `.ply` you can open in any splat viewer for the non-pixel version.
 - **Deterministic**: same seed, same dino, every time.
 
