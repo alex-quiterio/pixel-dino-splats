@@ -29,11 +29,23 @@ function labels() {
   }
 }
 
+let lastPixelText = "";
+function showPixels(data: Uint8ClampedArray) {
+  let lit = 0;
+  for (let i = 3; i < data.length; i += 4) if (data[i] !== 0) lit++;
+  const text = `${size}×${size} = ${(size * size).toLocaleString()} px (${lit.toLocaleString()} lit)`;
+  if (text !== lastPixelText) {
+    $("pixels").textContent = text;
+    lastPixelText = text;
+  }
+}
+
 function draw(t: number) {
   const frame = renderScene(scene, { size, yaw, pitch, zoom, t });
   canvas.width = size;
   canvas.height = size;
   ctx.putImageData(new ImageData(new Uint8ClampedArray(frame.data), size, size), 0, 0);
+  showPixels(frame.data);
 }
 
 let prev = performance.now();
