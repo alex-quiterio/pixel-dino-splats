@@ -58,7 +58,7 @@ function draw(t: number) {
 
 let prev = performance.now();
 function tick(now: number) {
-  if (spinning && !dragging) yaw += ((now - prev) / 1000) * 0.9;
+  if (spinning && !dragging) yaw += ((now - prev) / 1000) * 0.3;
   prev = now;
   draw(now / 1000);
   requestAnimationFrame(tick);
