@@ -6,3 +6,6 @@
 .frame[data-creature="cats"] {
   background: linear-gradient(#2a1d3a, #5a3f6e);
 }
+.frame[data-creature="elephant"] {
+  background: linear-gradient(#f0b878, #f7dca0);
+}

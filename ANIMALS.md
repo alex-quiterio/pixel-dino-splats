@@ -7,6 +7,7 @@ The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians
 - [x] **Giant squid in the rain** (rig groups for arms, fins and falling rain)
 - [x] **Mushroom stag** (bark grain, antler mushrooms, drifting spores, glow-orbs)
 - [x] **Ginger & black cats** (two creatures in one scene, tail swish, blink)
+- [x] **Elephant** (swaying trunk, flapping ears, tusks, dusty savanna)
 
 ## Same skeleton, new silhouettes (easy)
 - [ ] **Stegosaurus**: the dino's cousin; big diamond back plates and a spiked tail.
