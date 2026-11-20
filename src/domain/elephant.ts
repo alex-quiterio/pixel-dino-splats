@@ -11,7 +11,7 @@ const ivory = ramp("#a89a7a", "#cfc4a2", "#ece3c6", "#fffaea");
 const ground = (a: string, b: string, c: string) => ramp(a, b, c);
 
 export const ELEPHANT_PALETTES: readonly Palette[] = [
-  { name: "savanna", body: ramp("#4e4a58", "#76727f", "#9d98a6", "#c6c1cc"), belly: ramp("#5e5260", "#85777f", "#ab9a9c", "#d2c0bc"), plate: ivory, extras: ground("#6b4f2a", "#a47a3c", "#e8c888"), ...common },
+  { name: "savanna", body: ramp("#4c423e", "#75685f", "#9d8e82", "#c8b9aa"), belly: ramp("#5a4a44", "#82706a", "#a89488", "#d0bfb0"), plate: ivory, extras: ground("#6b4f2a", "#a47a3c", "#e8c888"), ...common },
   { name: "rose", body: ramp("#7a4a5a", "#b0707e", "#d99aa0", "#f6c8c8"), belly: ramp("#8a5a62", "#c08a8a", "#e4b0a8", "#fbd8cc"), plate: ivory, extras: ground("#5a3a4a", "#8a5a6a", "#f0c8d0"), ...common },
   { name: "twilight", body: ramp("#2c3566", "#46549a", "#6f82d0", "#a8baf4"), belly: ramp("#3a3c70", "#5c5c9c", "#8a88c8", "#bcb8ee"), plate: ivory, extras: ground("#1a1f3e", "#2c3466", "#8ae0e0"), ...common },
 ];
@@ -38,19 +38,22 @@ export function buildElephant(seed: number, palette: Palette): Splat[] {
   const tusk: ColorFn = (_n, _p, b) => palette.plate[b]!;
   const nail: ColorFn = (_n, _p, b) => palette.plate[clampBand(b - 1)]!;
 
-  // massive body, domed head
-  shell([-0.9, 3.0, 0], [1.35, 1.2, 0.95], skin);
-  shell([0.5, 3.15, 0], [1.1, 1.1, 0.9], skin);
-  shell([-2.0, 2.9, 0], [0.7, 0.85, 0.72], skin); // rump
-  shell([1.65, 3.55, 0], [0.8, 0.95, 0.72], skin); // head
-  shell([1.9, 4.2, 0], [0.55, 0.5, 0.5], skin); // forehead dome
-  shell([-2.6, 2.7, 0], [0.12, 0.12, 0.1], skin); // tail root
-  limb([[-2.65, 2.7, 0], [-2.8, 2.1, 0], [-2.78, 1.5, 0]], 0.07, 0.04, skin, TAIL);
-  shell([-2.78, 1.4, 0], [0.1, 0.18, 0.1], (_n, _p, b) => palette.outline ?? palette.body[b]!, { group: TAIL, weight: 1 });
+  // massive body: highest at the shoulders, a dipped back, sloping rump
+  shell([0.6, 3.3, 0], [1.15, 1.2, 0.95], skin); // shoulders
+  shell([-0.9, 2.85, 0], [1.3, 1.1, 0.92], skin); // dipped barrel
+  shell([-2.0, 2.75, 0], [0.8, 0.85, 0.74], skin); // rump
+  shell([1.75, 3.5, 0], [0.85, 1.0, 0.75], skin); // head
+  for (const side of [-1, 1]) shell([1.95, 4.15, side * 0.24], [0.45, 0.5, 0.34], skin); // twin forehead domes
+  shell([-2.7, 2.7, 0], [0.12, 0.12, 0.1], skin); // tail root
+  limb([[-2.75, 2.7, 0], [-2.95, 2.0, 0], [-2.93, 1.2, 0]], 0.08, 0.05, skin, TAIL);
+  shell([-2.93, 1.0, 0], [0.12, 0.3, 0.12], (_n, _p, bd) => palette.body[clampBand(bd - 2)]!, { group: TAIL, weight: 1 }); // tail tuft
 
   // trunk: thick root tapering to a curled tip, swings as one rig
   const trunk: Vec3[] = [[2.2, 3.5, 0], [2.65, 2.7, 0], [2.8, 1.8, 0], [2.95, 0.95, 0], [3.35, 0.55, 0], [3.7, 0.85, 0]];
-  limb(trunk, 0.4, 0.13, skin, TRUNK);
+  const ringed: ColorFn = (n, p, bd) => (Math.sin(p[1] * 22 + p[0] * 4) > 0.55 ? palette.body[clampBand(bd - 1)]! : skin(n, p, bd));
+  limb(trunk, 0.48, 0.15, ringed, TRUNK);
+  limb([[3.62, 0.9, 0.06], [3.95, 1.2, 0.08]], 0.09, 0.04, skin, TRUNK); // two-fingered tip
+  limb([[3.62, 0.9, -0.06], [3.82, 1.25, -0.08]], 0.08, 0.04, skin, TRUNK);
 
   for (const side of [-1, 1]) {
     // legs: pillars with toenails
@@ -61,10 +64,12 @@ export function buildElephant(seed: number, palette: Palette): Splat[] {
     }
     // ears: big flaps, pink-ish inside
     const ear = (c: Vec3, r: Vec3, col: ColorFn, w: number) => shell(c, r, col, { group: EAR, weight: w });
-    ear([0.95, 3.9, side * 0.98], [0.08, 0.85, 0.72], skin, 0.5);
-    ear([0.95, 3.9, side * 1.05], [0.05, 0.7, 0.6], earInner, 0.9);
+    ear([0.85, 4.0, side * 1.05], [0.08, 1.25, 1.0], skin, 0.5);
+    ear([0.8, 3.1, side * 1.02], [0.07, 0.7, 0.62], skin, 0.7); // lower lobe, Africa-shaped
+    ear([0.85, 4.0, side * 1.12], [0.05, 1.05, 0.82], earInner, 0.9);
+    ear([0.8, 3.15, side * 1.08], [0.04, 0.55, 0.48], earInner, 1);
     // tusks
-    limb([[2.1, 3.0, side * 0.34], [2.65, 2.55, side * 0.42], [3.15, 2.5, side * 0.38], [3.5, 2.85, side * 0.3]], 0.14, 0.04, tusk);
+    limb([[2.15, 3.05, side * 0.36], [2.75, 2.35, side * 0.55], [3.4, 2.2, side * 0.62], [3.95, 2.7, side * 0.5]], 0.18, 0.04, tusk);
     // eyes
     dot([2.05, 3.85, side * 0.62], 0.1, palette.eyeWhite);
     dot([2.1, 3.85, side * 0.66], 0.055, palette.pupil);
