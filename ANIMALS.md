@@ -8,9 +8,9 @@ The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians
 - [x] **Mushroom stag** (bark grain, antler mushrooms, drifting spores, glow-orbs)
 - [x] **Ginger & black cats** (two creatures in one scene, tail swish, blink)
 - [x] **Elephant** (swaying trunk, flapping ears, tusks, dusty savanna)
+- [x] **Stegosaurus** (back plates, spiked tail swing, grazing head dip)
 
 ## Same skeleton, new silhouettes (easy)
-- [ ] **Stegosaurus**: the dino's cousin; big diamond back plates and a spiked tail.
 - [ ] **Triceratops**: frill and three horns; wide, low, four legs.
 - [ ] **Brontosaurus**: very long neck and tail; a test for the tail-swish pose.
 - [ ] **Capybara**: round, calm, supportive of other animals sitting on it.

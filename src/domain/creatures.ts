@@ -5,6 +5,8 @@ import { buildSquid, poseSquid, SQUID_PALETTES, SQUID_VIEW } from "@domain/squid
 import { buildCats, CAT_PALETTES, CAT_VIEW, poseCats } from "@domain/cats";
 import { buildStag, poseStag, STAG_PALETTES, STAG_VIEW } from "@domain/stag";
 import { buildElephant, ELEPHANT_PALETTES, ELEPHANT_VIEW, poseElephant } from "@domain/elephant";
+import { buildDragon, DRAGON_PALETTES, DRAGON_VIEW, poseDragon } from "@domain/dragon";
+import { buildStegosaurus, poseStegosaurus, STEGO_PALETTES, STEGO_VIEW } from "@domain/stegosaurus";
 import { buildTRex } from "@domain/trex";
 
 export const trex: Creature = {
@@ -52,5 +54,23 @@ export const elephant: Creature = {
   view: ELEPHANT_VIEW,
 };
 
-export const CREATURES: readonly Creature[] = [trex, squid, stag, cats, elephant];
+export const stegosaurus: Creature = {
+  id: "stegosaurus",
+  name: "Stegosaurus",
+  palettes: STEGO_PALETTES,
+  build: buildStegosaurus,
+  pose: poseStegosaurus,
+  view: STEGO_VIEW,
+};
+
+export const dragon: Creature = {
+  id: "dragon",
+  name: "Black Dragon",
+  palettes: DRAGON_PALETTES,
+  build: buildDragon,
+  pose: poseDragon,
+  view: DRAGON_VIEW,
+};
+
+export const CREATURES: readonly Creature[] = [trex, squid, stag, cats, elephant, stegosaurus, dragon];
 export const creatureById = (id: string): Creature => CREATURES.find((c) => c.id === id) ?? trex;

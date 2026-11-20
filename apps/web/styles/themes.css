@@ -9,3 +9,9 @@
 .frame[data-creature="elephant"] {
   background: linear-gradient(#f0b878, #f7dca0);
 }
+.frame[data-creature="stegosaurus"] {
+  background: linear-gradient(#7ec8e8, #d8f0c8);
+}
+.frame[data-creature="dragon"] {
+  background: linear-gradient(#1a0c12, #4a1a1a);
+}

@@ -10,10 +10,13 @@
     <link rel="stylesheet" href="./styles/themes.css" />
   </head>
   <body>
+    <div class="app">
+    <aside class="sidebar">
+      <div id="picker" class="picker" role="group" aria-label="Creature"></div>
+    </aside>
     <main class="stage">
       <h1 id="title">pixel splats</h1>
       <p class="sub"><span id="count">0</span> gaussians · <span id="pixels"></span> · <span id="ms"></span> · drag to rotate &amp; tilt · scroll or slide to zoom</p>
-      <div id="picker" class="controls" role="group" aria-label="Creature"></div>
       <div class="frame" id="frame"><canvas id="view" aria-label="Pixel-art creature made of gaussian splats"></canvas></div>
       <div class="controls">
         <button id="spin" aria-pressed="true">spin</button>
@@ -35,6 +38,7 @@
       </div>
       <p class="name" id="name"></p>
     </main>
+    </div>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

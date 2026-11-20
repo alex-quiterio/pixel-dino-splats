@@ -23,3 +23,28 @@ canvas {
   cursor: grab;
 }
 canvas:active { cursor: grabbing; }
+
+.app {
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: stretch;
+  flex: 0 0 180px;
+  padding: 24px 12px;
+  background: var(--panel);
+  border-right: 4px solid var(--ink);
+}
+.picker { display: flex; flex-direction: column; gap: 8px; }
+.picker button { width: 100%; text-align: left; }
+.picker button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.app .stage { flex: 1; min-width: 0; margin: 0; }
+@media (max-width: 640px) {
+  .app { flex-direction: column; align-items: stretch; }
+  .sidebar { position: static; flex: none; border-right: 0; border-bottom: 4px solid var(--ink); padding: 12px; }
+  .picker { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .picker button { width: auto; }
+}
