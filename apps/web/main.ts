@@ -114,7 +114,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 const picker = $("picker");
-for (const c of CREATURES) {
+for (const c of [...CREATURES].sort((a, b) => a.name.localeCompare(b.name))) {
   const b = document.createElement("button");
   b.textContent = c.name;
   b.dataset.creature = c.id;
