@@ -26,15 +26,19 @@ const DUST_COUNT = 40;
 
 export function buildElephant(seed: number, palette: Palette): Splat[] {
   const rng = createRng(seed + 4000);
-  const { splats, shell, limb, dot } = createSculptor(rng, 100);
+  const { splats, shell, limb, dot } = createSculptor(rng, 140);
   const [G0, G1, DUSTC] = palette.extras as [Rgb, Rgb, Rgb];
 
   const skin: ColorFn = (n, p, b) => {
-    const wrinkle = Math.sin(p[1] * 9 + Math.sin(p[0] * 3) * 1.5) + Math.sin(p[0] * 7 + p[2] * 5) * 0.5;
-    const bb = wrinkle > 1.1 ? clampBand(b - 1) : b;
+    const crease = Math.sin(p[1] * 9 + Math.sin(p[0] * 3) * 1.5) + Math.sin(p[0] * 7 + p[2] * 5) * 0.5;
+    const cross = Math.sin(p[0] * 15 - p[1] * 11 + p[2] * 4);
+    let bb = crease > 1.1 || cross > 0.93 ? clampBand(b - 1) : b;
+    if (n[1] > 0.55 && cross < -0.6) bb = clampBand(bb + 1); // sun-dried dust on the back
+    if (p[1] < 0.9 && p[1] > 0.1) return palette.belly[clampBand(bb - 1 + (cross > 0.3 ? 1 : 0))]!; // mud-caked ankles
     return n[1] < -0.45 ? palette.belly[bb]! : palette.body[bb]!;
   };
-  const earInner: ColorFn = (_n, _p, b) => palette.belly[clampBand(b + 1)]!;
+  const fold: ColorFn = (_n, _p, b) => palette.body[clampBand(b - 1)]!;
+  const dark: ColorFn = () => palette.outline;
   const tusk: ColorFn = (_n, _p, b) => palette.plate[b]!;
   const nail: ColorFn = (_n, _p, b) => palette.plate[clampBand(b - 1)]!;
 
@@ -48,10 +52,25 @@ export function buildElephant(seed: number, palette: Palette): Splat[] {
   limb([[-2.75, 2.7, 0], [-2.95, 2.0, 0], [-2.93, 1.2, 0]], 0.08, 0.05, skin, TAIL);
   shell([-2.93, 1.0, 0], [0.12, 0.3, 0.12], (_n, _p, bd) => palette.body[clampBand(bd - 2)]!, { group: TAIL, weight: 1 }); // tail tuft
 
+  // heavy skin folds at the neck, shoulder and thigh
+  for (const side of [-1, 1]) {
+    shell([1.3, 2.7, side * 0.78], [0.5, 0.1, 0.2], fold); // neck fold
+    shell([0.4, 2.75, side * 0.9], [0.6, 0.08, 0.16], fold); // shoulder crease
+    shell([-1.5, 2.3, side * 0.88], [0.55, 0.09, 0.16], fold); // thigh crease
+    shell([-0.5, 2.0, side * 0.9], [0.7, 0.07, 0.14], fold); // belly crease
+  }
+  // sparse bristles along the spine and forehead
+  for (let i = 0; i < 40; i++) {
+    const x = rng.range(-2.3, 2.1);
+    const y = x > 1.2 ? 4.6 + (x - 1.2) * -0.5 : 3.95 - Math.abs(x - 0.6) * 0.15 - (x < -1.4 ? (-1.4 - x) * 0.5 : 0);
+    dot([x, y + rng.range(0, 0.12), rng.range(-0.2, 0.2)], 0.025, palette.body[0]!);
+  }
+
   // trunk: thick root tapering to a curled tip, swings as one rig
   const trunk: Vec3[] = [[2.2, 3.5, 0], [2.65, 2.7, 0], [2.8, 1.8, 0], [2.95, 0.95, 0], [3.35, 0.55, 0], [3.7, 0.85, 0]];
-  const ringed: ColorFn = (n, p, bd) => (Math.sin(p[1] * 22 + p[0] * 4) > 0.55 ? palette.body[clampBand(bd - 1)]! : skin(n, p, bd));
+  const ringed: ColorFn = (n, p, bd) => (Math.sin(p[1] * 24 + p[0] * 5) > 0.35 ? palette.body[clampBand(bd - 1)]! : n[0] > 0.4 ? palette.belly[clampBand(bd)]! : palette.body[clampBand(bd)]!);
   limb(trunk, 0.48, 0.15, ringed, TRUNK);
+  dot([3.88, 1.05, 0.0], 0.07, palette.outline, { rig: { group: TRUNK, weight: 1 } }); // nostril
   limb([[3.62, 0.9, 0.06], [3.95, 1.2, 0.08]], 0.09, 0.04, skin, TRUNK); // two-fingered tip
   limb([[3.62, 0.9, -0.06], [3.82, 1.25, -0.08]], 0.08, 0.04, skin, TRUNK);
 
@@ -60,20 +79,37 @@ export function buildElephant(seed: number, palette: Palette): Splat[] {
     for (const [x, z] of [[1.0, 0.55], [-1.6, 0.55]] as const) {
       limb([[x, 2.4, z * side], [x + 0.03, 1.3, z * side], [x, 0.25, z * side]], 0.46, 0.4, skin);
       shell([x + 0.08, 0.15, z * side], [0.5, 0.18, 0.46], skin);
-      for (const nz of [-0.22, 0, 0.22]) shell([x + 0.5, 0.15, z * side + nz], [0.08, 0.09, 0.07], nail);
+      const toes = x > 0 ? [-0.3, -0.1, 0.1, 0.3] : [-0.2, 0, 0.2];
+      for (const nz of toes) shell([x + 0.52, 0.14, z * side + nz], [0.09, 0.1, 0.08], nail);
+      shell([x + 0.05, 1.3, z * side], [0.5, 0.06, 0.48], fold); // knee crease
+      shell([x + 0.04, 0.55, z * side], [0.44, 0.05, 0.42], fold); // ankle fold
+      shell([x + 0.04, 1.8, z * side], [0.5, 0.05, 0.48], fold);
     }
     // ears: big flaps, pink-ish inside
     const ear = (c: Vec3, r: Vec3, col: ColorFn, w: number) => shell(c, r, col, { group: EAR, weight: w });
-    ear([0.85, 4.0, side * 1.05], [0.08, 1.25, 1.0], skin, 0.5);
-    ear([0.8, 3.1, side * 1.02], [0.07, 0.7, 0.62], skin, 0.7); // lower lobe, Africa-shaped
-    ear([0.85, 4.0, side * 1.12], [0.05, 1.05, 0.82], earInner, 0.9);
-    ear([0.8, 3.15, side * 1.08], [0.04, 0.55, 0.48], earInner, 1);
+    const earColor: ColorFn = (n, p, bd) => {
+      if (Math.abs(n[2]) < 0.35) return palette.body[clampBand(bd - 1)]!; // darker rim
+      return n[2] * side > 0 ? palette.belly[clampBand(bd + 1)]! : skin(n, p, bd);
+    };
+    ear([0.85, 4.05, side * 1.02], [1.15, 1.4, 0.09], earColor, 0.5); // fan lying against the shoulder
+    ear([0.55, 2.95, side * 1.0], [0.75, 0.8, 0.08], earColor, 0.8); // lower lobe, Africa-shaped
+    // ear veins fanning out from the base, and torn nicks on the rim
+    for (const ty of [5.2, 4.2, 3.0]) limb([[1.7, 4.0, side * 1.1], [0.9, (4.0 + ty) / 2, side * 1.1], [-0.05, ty, side * 1.12]], 0.03, 0.012, fold, EAR);
+    for (const [nx, ny] of [[-0.25, 4.3], [0.2, 5.3], [-0.1, 3.0], [0.4, 2.3]] as const) dot([nx, ny, side * 1.02], 0.07, palette.body[0]!, { rig: { group: EAR, weight: 0.8 } });
     // tusks
     limb([[2.15, 3.05, side * 0.36], [2.75, 2.35, side * 0.55], [3.4, 2.2, side * 0.62], [3.95, 2.7, side * 0.5]], 0.18, 0.04, tusk);
+    shell([2.2, 3.0, side * 0.36], [0.22, 0.2, 0.2], skin); // lip over the tusk base
+    dot([3.95, 2.7, side * 0.5], 0.05, palette.plate[0]!); // worn tip
     // eyes
-    dot([2.05, 3.85, side * 0.62], 0.1, palette.eyeWhite);
-    dot([2.1, 3.85, side * 0.66], 0.055, palette.pupil);
+    shell([2.05, 3.9, side * 0.68], [0.16, 0.11, 0.08], fold); // heavy eyelid
+    dot([2.1, 3.85, side * 0.74], 0.085, palette.eyeWhite);
+    dot([2.14, 3.85, side * 0.78], 0.05, palette.pupil);
+    for (let l = -1; l <= 1; l++) limb([[2.1 + l * 0.06, 3.95, side * 0.74], [2.14 + l * 0.06, 4.05, side * 0.78]], 0.012, 0.006, fold); // lashes
+    limb([[1.9, 3.8, side * 0.73], [1.85, 3.5, side * 0.75]], 0.035, 0.02, fold); // temporal gland streak
+    shell([2.0, 4.02, side * 0.62], [0.2, 0.06, 0.12], fold); // brow
   }
+
+  for (let i = 0; i < 6; i++) limb([[-2.93, 1.05, 0], [-2.93 + (i - 2.5) * 0.05, 0.6, (i - 2.5) * 0.04]], 0.02, 0.008, dark, TAIL);
 
   // dusty ground patch with grass tufts
   for (let i = 0; i < 700; i++) {
@@ -88,6 +124,13 @@ export function buildElephant(seed: number, palette: Palette): Splat[] {
     const bx = Math.cos(a) * r * 4.6;
     const bz = Math.sin(a) * r * 3.3;
     for (let k = -1; k <= 1; k++) limb([[bx + k * 0.06, 0, bz], [bx + k * 0.14, 0.3, bz + k * 0.05]], 0.03, 0.012, (_n, _p, b) => G1 ?? palette.body[b]!);
+  }
+  // footprints and a few rocks
+  for (const [fx, fz] of [[2.5, 1.6], [0.2, 1.9], [-2.3, 1.7], [3.0, -1.7], [-0.9, -2.1]] as const) shell([fx, 0.02, fz], [0.38, 0.03, 0.3], (_n, _p, b) => (b > 1 ? G0 : palette.outline));
+  for (let i = 0; i < 6; i++) {
+    const a = rng.range(0, Math.PI * 2);
+    const r = rng.range(0.7, 0.95);
+    shell([Math.cos(a) * r * 4.6, 0.12, Math.sin(a) * r * 3.2], [rng.range(0.15, 0.3), 0.14, rng.range(0.12, 0.25)], (_n, _p, b) => palette.belly[clampBand(b)]!);
   }
   // dust motes puffing up
   for (let i = 0; i < DUST_COUNT; i++) {
@@ -110,8 +153,9 @@ export function poseElephant(splats: readonly Splat[], t: number): Splat[] {
       return { ...s, position: [x + Math.sin(t * 1.6) * 0.35 * w, y + Math.sin(t * 1.6 + 1) * 0.12 * w, z + Math.sin(t * 0.8) * 0.3 * w] };
     }
     if (g?.group === EAR) {
-      const flap = Math.sin(t * 2.4) * 0.22;
-      return { ...s, position: [x, y, z + Math.sign(z) * flap * (0.6 + g.weight * 0.4)] };
+      const flap = Math.sin(t * 2.4) * 0.32;
+      const lift = Math.max(0, Math.min(1.2, (1.85 - x) / 1.8));
+      return { ...s, position: [x, y, z + Math.sign(z) * flap * lift] };
     }
     if (g?.group === TAIL) return { ...s, position: [x, y, z + Math.sin(t * 2.2) * 0.25 * g.weight] };
     return s;
