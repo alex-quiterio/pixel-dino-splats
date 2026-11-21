@@ -15,3 +15,9 @@
 .frame[data-creature="dragon"] {
   background: linear-gradient(#1a0c12, #4a1a1a);
 }
+.frame[data-creature="velociraptor"] {
+  background: linear-gradient(#e8a060, #f4d8a0);
+}
+.frame[data-creature="halloween"] {
+  background: linear-gradient(#070616, #1c1236 60%, #3a1e3e);
+}

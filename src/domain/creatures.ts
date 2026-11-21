@@ -8,6 +8,8 @@ import { buildElephant, ELEPHANT_PALETTES, ELEPHANT_VIEW, poseElephant } from "@
 import { buildDragon, DRAGON_PALETTES, DRAGON_VIEW, poseDragon } from "@domain/dragon";
 import { buildStegosaurus, poseStegosaurus, STEGO_PALETTES, STEGO_VIEW } from "@domain/stegosaurus";
 import { buildTRex } from "@domain/trex";
+import { buildVelociraptor, poseVelociraptor, RAPTOR_PALETTES, RAPTOR_VIEW } from "@domain/velociraptor";
+import { buildHalloween, HALLOWEEN_PALETTES, HALLOWEEN_VIEW, poseHalloween } from "@domain/halloween";
 
 export const trex: Creature = {
   id: "trex",
@@ -72,5 +74,23 @@ export const dragon: Creature = {
   view: DRAGON_VIEW,
 };
 
-export const CREATURES: readonly Creature[] = [trex, squid, stag, cats, elephant, stegosaurus, dragon];
+export const velociraptor: Creature = {
+  id: "velociraptor",
+  name: "Velociraptor",
+  palettes: RAPTOR_PALETTES,
+  build: buildVelociraptor,
+  pose: poseVelociraptor,
+  view: RAPTOR_VIEW,
+};
+
+export const halloween: Creature = {
+  id: "halloween",
+  name: "Halloween Eve",
+  palettes: HALLOWEEN_PALETTES,
+  build: buildHalloween,
+  pose: poseHalloween,
+  view: HALLOWEEN_VIEW,
+};
+
+export const CREATURES: readonly Creature[] = [trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween];
 export const creatureById = (id: string): Creature => CREATURES.find((c) => c.id === id) ?? trex;
