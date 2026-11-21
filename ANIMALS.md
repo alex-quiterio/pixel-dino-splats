@@ -9,7 +9,7 @@ The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians
 - [x] **Ginger & black cats** (two creatures in one scene, tail swish, blink)
 - [x] **Elephant** (swaying trunk, flapping ears, tusks, dusty savanna)
 - [x] **Stegosaurus** (back plates, spiked tail swing, grazing head dip)
-- [x] **Velociraptor** (feathered arms and tail fan, sickle claw tap, bird-like head jerks, nest of eggs)
+- [x] **Velociraptor** (fully feathered with natural barring, folded wing-arms, frond tail, lipped snout, sickle claw tap, blink, nest of eggs)
 - [x] **The night before Halloween** (carved flickering jack-o'-lanterns, haunted tree with owl and spider, graves, iron fence, ghost, bats, moon, fog)
 
 ## Same skeleton, new silhouettes (easy)
