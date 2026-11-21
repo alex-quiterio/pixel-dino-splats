@@ -19,5 +19,5 @@
   background: linear-gradient(#e8a060, #f4d8a0);
 }
 .frame[data-creature="halloween"] {
-  background: linear-gradient(#070616, #1c1236 60%, #3a1e3e);
+  background: radial-gradient(ellipse at 30% 25%, #2a3c52, #101a2a 55%, #04060c);
 }

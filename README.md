@@ -28,9 +28,9 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 ![steppe velociraptor turntable](assets/velociraptor-steppe.png)
 
 ### The night before Halloween
-![classic halloween eve turntable](assets/halloween-classic.png)
+![moonlit halloween eve turntable](assets/halloween-moonlit.png)
 
-<sub>more colourways in <a href="assets">assets/</a>: T-Rex (moss, lagoon, grape, ember), squid (coral, violet, kelp), stag (ember, frost, toxic), cats (ginger-black, ginger-grey, butter-black), elephant (savanna, rose, twilight), stegosaurus (fern, dusk, sand), velociraptor (steppe, forest, ash), Halloween eve (classic, witchlight, bloodmoon)</sub>
+<sub>more colourways in <a href="assets">assets/</a>: T-Rex (moss, lagoon, grape, ember), squid (coral, violet, kelp), stag (ember, frost, toxic), cats (ginger-black, ginger-grey, butter-black), elephant (savanna, rose, twilight), stegosaurus (fern, dusk, sand), velociraptor (steppe, forest, ash), Halloween eve (moonlit, witchlight, bloodmoon)</sub>
 
 </div>
 

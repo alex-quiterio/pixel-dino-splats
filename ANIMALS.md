@@ -10,7 +10,7 @@ The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians
 - [x] **Elephant** (swaying trunk, flapping ears, tusks, dusty savanna)
 - [x] **Stegosaurus** (back plates, spiked tail swing, grazing head dip)
 - [x] **Velociraptor** (fully feathered with natural barring, folded wing-arms, frond tail, lipped snout, sickle claw tap, blink, nest of eggs)
-- [x] **The night before Halloween** (carved flickering jack-o'-lanterns, haunted tree with owl and spider, graves, iron fence, ghost, bats, moon, fog)
+- [x] **The night before Halloween** (cinematic gothic stop-motion look: silhouetted curling tree against a huge moon, striped curled lamppost, Halloween-meets-Christmas bulbs, gift and first snow, glowing carved lanterns, wispy ghost, bats, owl, spider, graves, fog)
 
 ## Same skeleton, new silhouettes (easy)
 - [ ] **Triceratops**: frill and three horns; wide, low, four legs.

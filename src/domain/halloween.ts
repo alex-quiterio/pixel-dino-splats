@@ -12,11 +12,11 @@ const common = { outline: hex("#06040c"), eyeWhite: hex("#f4f0ff"), pupil: hex("
  */
 export const HALLOWEEN_PALETTES: readonly Palette[] = [
   {
-    name: "classic",
-    body: ramp("#6a2208", "#b0460e", "#e8741a", "#ffa840"),
+    name: "moonlit",
+    body: ramp("#5a1e08", "#a2400e", "#e06a1a", "#ffa040"),
     belly: ramp("#7a3a08", "#c87010", "#f4b020", "#fff080"),
-    plate: ramp("#24202e", "#3e3a4c", "#5e5a70", "#8a86a0"),
-    extras: ramp("#141c1a", "#26342a", "#3a6a24", "#f4ecc8", "#c8bc98", "#8a1e14", "#1e1410", "#3e2c20", "#3a1a5a"),
+    plate: ramp("#141824", "#262e3e", "#465266", "#7a88a0"),
+    extras: ramp("#0a1016", "#18242c", "#2e4a36", "#eef0e0", "#b4bab4", "#a01e1e", "#06060a", "#1a1a22", "#2a1a3a", "#3a7ae0"),
     ...common,
   },
   {
@@ -24,7 +24,7 @@ export const HALLOWEEN_PALETTES: readonly Palette[] = [
     body: ramp("#5a2a0a", "#9a4a12", "#d4782a", "#f4a850"),
     belly: ramp("#14501a", "#30962a", "#72dc40", "#d8ff90"),
     plate: ramp("#1a2426", "#30403e", "#4e6460", "#7a948c"),
-    extras: ramp("#0e1614", "#1c2c24", "#2e5a22", "#e4f4c8", "#a8c098", "#6a1a3a", "#161210", "#342a22", "#5a1a6a"),
+    extras: ramp("#0a1210", "#16241e", "#2e5a22", "#e4f4c8", "#a8c098", "#8a1a3a", "#060808", "#181c1a", "#3a1a4a", "#c040e0"),
     ...common,
   },
   {
@@ -32,14 +32,15 @@ export const HALLOWEEN_PALETTES: readonly Palette[] = [
     body: ramp("#5a1206", "#962a0c", "#d0501a", "#f08838"),
     belly: ramp("#7a1a08", "#c0400c", "#f08020", "#ffd060"),
     plate: ramp("#2a1a1e", "#462e34", "#6a4a50", "#94707a"),
-    extras: ramp("#160e10", "#2a1c1c", "#3a4a1c", "#f06a40", "#a8301e", "#5a0a0a", "#1a0e0c", "#3a2420", "#2a1030"),
+    extras: ramp("#120a0c", "#241818", "#3a4a1c", "#f06a40", "#a8301e", "#c01a1a", "#0a0606", "#201414", "#2a1030", "#e8d040"),
     ...common,
   },
 ];
 
 export const HALLOWEEN_VIEW = { target: [0, 3.0, 0] as Vec3, span: 12.5, pitch: 0.16 };
 
-const BAT_ORBIT: Vec3 = [0.4, 5.4, -1.2];
+const BAT_ORBIT: Vec3 = [-0.8, 5.6, -1.6];
+const MOON: Vec3 = [-2.3, 6.3, -4.4];
 const GHOST_HOME: Vec3 = [1.9, 3.3, 0.7];
 
 /** Animated bits keep their rest data here, keyed by splat, so pose() stays a pure function of t. */
@@ -52,7 +53,9 @@ type Motion =
   | { kind: "leaf"; w: number; top: number }
   | { kind: "blink" }
   | { kind: "spider"; f: number }
-  | { kind: "wisp"; w: number };
+  | { kind: "wisp"; w: number }
+  | { kind: "bulb"; i: number; on: Rgb; off: Rgb }
+  | { kind: "snow"; w: number; top: number };
 const motion = new WeakMap<Splat, Motion>();
 
 type Face = "grin" | "angry" | "spooked";
@@ -98,7 +101,7 @@ function carved(face: Face, u: number, v: number): boolean {
 export function buildHalloween(seed: number, palette: Palette): Splat[] {
   const rng = createRng(seed + 8000);
   const { splats, shell, limb, dot } = createSculptor(rng, 120);
-  const [GD, GL, VINE, MOON, MOON_SHADE, LEAF, BARK_D, BARK, HAT] = palette.extras as [Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb];
+  const [GD, GL, VINE, MOON_LIT, MOON_SHADE, LEAF, BARK_D, BARK, HAT, BULB] = palette.extras as [Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb, Rgb];
   const [, GLOW1, GLOW2, GLOW3] = palette.belly as [Rgb, Rgb, Rgb, Rgb];
   const remap = (from: number, f: (s: Splat) => Splat) => {
     for (let i = from; i < splats.length; i++) splats[i] = f(splats[i]!);
@@ -217,9 +220,15 @@ export function buildHalloween(seed: number, palette: Palette): Splat[] {
   // witch hat perched crooked on the angry pumpkin
   {
     const from = splats.length;
-    const hat: ColorFn = (_n, p, b) => (Math.abs(p[1] - 1.24) < 0.06 ? LEAF : b > 2 ? palette.plate[1]! : b > 0 ? HAT : palette.outline);
+    const hat: ColorFn = (_n, p, b) => (Math.abs(p[1] - 1.24) < 0.06 ? HAT : Math.floor(p[1] * 7) % 2 === 0 ? (b > 0 ? palette.eyeWhite : palette.plate[3]!) : b > 2 ? palette.plate[0]! : palette.outline);
     shell([-1.9, 1.1, 1.6], [0.78, 0.04, 0.74], hat);
-    limb([[-1.9, 1.12, 1.6], [-1.9, 1.7, 1.6], [-1.75, 2.15, 1.6], [-1.45, 2.3, 1.6], [-1.3, 2.15, 1.6]], 0.45, 0.03, hat);
+    const cone: Vec3[] = [[-1.9, 1.12, 1.6], [-1.9, 1.7, 1.6], [-1.78, 2.15, 1.6]];
+    for (let i = 0; i <= 12; i++) {
+      const a = Math.PI + i * 0.5;
+      const rr = 0.32 * (1 - i / 14);
+      cone.push([-1.78 + 0.32 + Math.cos(a) * rr, 2.15 + Math.sin(a) * rr * -1 + 0.0, 1.6]);
+    }
+    limb(cone, 0.45, 0.025, hat);
     dot([-1.9, 1.24, 2.06], 0.08, GLOW3, { tall: 0.9 }); // buckle
     dot([-1.9, 1.24, 2.08], 0.04, LEAF);
     lean(from, [-1.9, 1.1, 1.6], 0.08, -0.18);
@@ -338,7 +347,21 @@ export function buildHalloween(seed: number, palette: Palette): Splat[] {
     const mid: Vec3 = [from[0] + dir[0] * len * 0.5 + j() * len * 0.4, from[1] + dir[1] * len * 0.5 + j() * len * 0.4, from[2] + dir[2] * len * 0.5];
     const to: Vec3 = [from[0] + dir[0] * len, from[1] + dir[1] * len, from[2] + dir[2] * len];
     limb([from, mid, to], r, r * 0.55, bark);
-    if (depth === 0) return;
+    if (depth === 0) {
+      // curl the twig tip into a tight spiral
+      const curl: Vec3[] = [to];
+      const turn = dir[0] >= 0 ? -1 : 1;
+      const a0 = Math.atan2(dir[1], dir[0]);
+      const rr0 = len * 0.28;
+      const c: Vec3 = [to[0] + Math.cos(a0 + turn * Math.PI / 2) * rr0, to[1] + Math.sin(a0 + turn * Math.PI / 2) * rr0, to[2]];
+      for (let i = 1; i <= 16; i++) {
+        const a = a0 - turn * Math.PI / 2 + turn * i * 0.55;
+        const rr = rr0 * (1 - i / 20);
+        curl.push([c[0] + Math.cos(a) * rr, c[1] + Math.sin(a) * rr, c[2]]);
+      }
+      limb(curl, r * 0.55, 0.012, bark);
+      return;
+    }
     for (let k = 0; k < 2; k++) {
       const nd = normalize([dir[0] + (k === 0 ? -0.6 : 0.6) + j(), dir[1] + j() * 0.6, dir[2] + j()]);
       branch(to, nd, len * 0.68, r * 0.55, depth - 1);
@@ -393,23 +416,30 @@ export function buildHalloween(seed: number, palette: Palette): Splat[] {
   }
 
   // ---- full moon with craters, hanging behind everything
-  shell([2.0, 6.8, -3.9], [1.15, 1.15, 0.4], (_n, p, b) => {
-    const crater = Math.sin(p[0] * 5 + 1) * Math.sin(p[1] * 6) > 0.55 || Math.hypot(p[0] - 1.6, p[1] - 7.2) < 0.22 || Math.hypot(p[0] - 2.5, p[1] - 6.4) < 0.3;
-    return crater || b < 1 ? MOON_SHADE : MOON;
-  }, undefined, 0.11);
+  shell(MOON, [1.85, 1.85, 0.35], (_n, p, b) => {
+    const [mx, my] = [p[0] - MOON[0], p[1] - MOON[1]];
+    const crater = Math.sin(mx * 4 + 1) * Math.sin(my * 5) > 0.6 || Math.hypot(mx + 0.6, my - 0.5) < 0.3 || Math.hypot(mx - 0.7, my + 0.4) < 0.4 || Math.hypot(mx - 0.2, my - 0.9) < 0.18;
+    return crater || b < 1 ? MOON_SHADE : MOON_LIT;
+  }, undefined, 0.13);
+  // thin clouds drifting across the moon's face
+  for (let i = 0; i < 60; i++) {
+    const y = MOON[1] + (i % 2 === 0 ? -0.6 : 0.8) + rng.range(-0.08, 0.08);
+    dot([MOON[0] + rng.range(-2.6, 2.4), y, MOON[2] + 0.5], rng.range(0.12, 0.2), palette.plate[1]!, { tall: 0.35, opacity: 0.9 });
+  }
 
   // ---- a little ghost drifting over the patch
   {
     const from = splats.length;
     const sheet = (n: Vec3): Rgb => (shadeBand(n) <= 1 ? palette.plate[3]! : palette.eyeWhite);
-    for (let i = 0; i < 1100; i++) {
+    for (let i = 0; i < 1500; i++) {
+      const k = Math.pow(rng.next(), 0.8);
       const a = rng.range(0, Math.PI * 2);
-      const y = rng.range(-0.8, 0.35);
-      const hem = -0.8 + 0.12 * Math.sin(a * 6);
-      if (y < hem) continue;
-      const r = 0.45 + (0.35 - y) * 0.16;
-      const n = normalize([Math.cos(a), 0.15, Math.sin(a)]);
-      dot([Math.cos(a) * r, y, Math.sin(a) * r], 0.07, sheet(n), { opacity: 0.92 });
+      const cx = -0.55 * k * k + 0.15 * Math.sin(k * 5);
+      const cy = 0.35 - 1.6 * k;
+      const cz = -0.35 * k;
+      const r = 0.46 * Math.pow(1 - k, 0.7) + 0.03;
+      const n = normalize([Math.cos(a), 0.1, Math.sin(a)]);
+      dot([cx + Math.cos(a) * r, cy, cz + Math.sin(a) * r], 0.07 * (1 - k * 0.5), sheet(n), { opacity: 0.92 });
     }
     for (let i = 0; i < 500; i++) {
       const u = rng.onSphere();
@@ -417,11 +447,10 @@ export function buildHalloween(seed: number, palette: Palette): Splat[] {
       dot([u[0] * 0.45, 0.35 + u[1] * 0.5, u[2] * 0.45], 0.07, sheet(u), { opacity: 0.92 });
     }
     for (const s of [-1, 1]) {
-      dot([s * 0.15, 0.48, 0.42], 0.07, palette.pupil, { tall: 1.7 });
+      dot([s * 0.15, 0.48, 0.42], 0.085, palette.pupil, { tall: 1.9 }); // hollow, drooping eye sockets
       dot([s * 0.13, 0.52, 0.47], 0.02, palette.eyeWhite);
-      dot([s * 0.27, 0.32, 0.38], 0.05, LEAF, { opacity: 0.6, tall: 0.6 }); // blush
     }
-    dot([0, 0.22, 0.45], 0.06, palette.pupil, { tall: 1.5 }); // "oooo"
+    dot([0, 0.2, 0.45], 0.07, palette.pupil, { tall: 1.9 }); // a long, moaning mouth
     const body = splats.length;
     for (const s of [-1, 1]) limb([[s * 0.42, 0.05, 0.05], [s * 0.66, 0.2, 0.25], [s * 0.72, 0.36, 0.4]], 0.11, 0.06, (n) => sheet(n));
     for (let i = from; i < splats.length; i++) {
@@ -472,6 +501,72 @@ export function buildHalloween(seed: number, palette: Palette): Splat[] {
     }
   }
 
+  // ---- a crooked striped lamppost whose top curls over to hang a lantern
+  {
+    const from = splats.length;
+    const pole: ColorFn = (_n, p, b) => (Math.floor((p[1] + p[0] * 0.3) * 5) % 2 === 0 ? (b > 1 ? palette.eyeWhite : palette.plate[3]!) : palette.outline);
+    const pts: Vec3[] = [[3.7, 0, -0.5], [3.62, 1.2, -0.5], [3.75, 2.4, -0.5], [3.6, 3.2, -0.5]];
+    const c: Vec3 = [3.25, 3.2, -0.5];
+    for (let i = 1; i <= 14; i++) {
+      const a = i * 0.42;
+      const rr = 0.35 * (1 - i / 22);
+      pts.push([c[0] + Math.cos(a) * rr, c[1] + Math.sin(a) * rr, c[2]]);
+    }
+    limb(pts, 0.09, 0.03, pole);
+    shell([3.7, 0.1, -0.5], [0.2, 0.1, 0.2], () => palette.outline);
+    limb([[3.25, 2.95, -0.5], [3.25, 2.7, -0.5]], 0.015, 0.015, () => palette.outline);
+    shell([3.25, 2.5, -0.5], [0.16, 0.2, 0.16], (_n, p, b) => (Math.abs(p[0] - 3.25) < 0.03 || Math.abs(p[2] + 0.5) < 0.03 ? palette.outline : b > 1 ? GLOW3 : GLOW2));
+    shell([3.25, 2.72, -0.5], [0.19, 0.05, 0.19], () => palette.outline);
+    tag(from, (s) => (s.color === GLOW3 || s.color === GLOW2 ? { kind: "glow", w: rng.next(), bright: s.color, dim: GLOW1 } : undefined));
+  }
+
+  // ---- a lopsided, spooky gift box with a striped ribbon; something glows inside the crack
+  {
+    const from = splats.length;
+    const g: Vec3 = [-0.45, 0, 2.55];
+    const [hw, hh] = [0.32, 0.5];
+    const ribbon = (p: Vec3) => Math.abs(p[0] - g[0]) < 0.07 || Math.abs(p[2] - g[2]) < 0.07;
+    const wrap = (p: Vec3, b: number): Rgb => (ribbon(p) ? (Math.floor((p[1] + p[0] + p[2]) * 12) % 2 === 0 ? LEAF : palette.eyeWhite) : b > 1 ? HAT : palette.plate[0]!);
+    for (let i = 0; i < 900; i++) {
+      const face = Math.floor(rng.next() * 5);
+      const [u, v] = [rng.range(-1, 1), rng.range(0, 1)];
+      const p: Vec3 = face === 0 ? [g[0] + u * hw, hh, g[2] + rng.range(-1, 1) * hw] : face === 1 ? [g[0] + hw, v * hh, g[2] + u * hw] : face === 2 ? [g[0] - hw, v * hh, g[2] + u * hw] : face === 3 ? [g[0] + u * hw, v * hh, g[2] + hw] : [g[0] + u * hw, v * hh, g[2] - hw];
+      const n: Vec3 = face === 0 ? [0, 1, 0] : face === 1 ? [1, 0, 0] : face === 2 ? [-1, 0, 0] : face === 3 ? [0, 0, 1] : [0, 0, -1];
+      const crack = face === 3 && Math.abs(p[1] - hh + 0.06) < 0.03;
+      dot(p, 0.05, crack ? GLOW3 : wrap(p, shadeBand(n)), { opacity: 0.95 });
+    }
+    lean(from, g, 0.0, 0.14);
+    const bowFrom = splats.length;
+    const bow: ColorFn = (_n, p, b) => (Math.floor(p[0] * 20) % 2 === 0 ? LEAF : b > 1 ? palette.eyeWhite : palette.plate[3]!);
+    for (const s of [-1, 1]) limb([[g[0], hh + 0.02, g[2]], [g[0] + s * 0.15, hh + 0.22, g[2]], [g[0] + s * 0.3, hh + 0.12, g[2]], [g[0] + s * 0.1, hh + 0.04, g[2]]], 0.05, 0.03, bow);
+    limb([[g[0], hh, g[2]], [g[0] + 0.12, hh - 0.1, g[2] + 0.25]], 0.035, 0.02, bow);
+    lean(bowFrom, g, 0.0, 0.14);
+  }
+
+  // ---- a string of coloured bulbs sagging from the tree across to the lamppost
+  {
+    const strands: [Vec3, Vec3, number][] = [[[-1.8, 3.72, -1.1], [3.4, 3.05, -0.5], 1.1], [[-3.6, 3.4, -1.25], [-1.8, 3.72, -1.1], 0.45]];
+    const colors = [LEAF, VINE, GLOW3, BULB];
+    let n = 0;
+    for (const [a, b, sag] of strands) {
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+      const steps = Math.round(len / 0.05);
+      for (let i = 0; i <= steps; i++) {
+        const f = i / steps;
+        const p: Vec3 = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f - sag * 4 * f * (1 - f), a[2] + (b[2] - a[2]) * f];
+        dot(p, 0.018, palette.outline);
+        if (i % 6 === 3) {
+          const on = colors[n % 4]!;
+          const from = splats.length;
+          dot([p[0], p[1] - 0.09, p[2]], 0.05, on, { tall: 1.4 });
+          dot([p[0], p[1] - 0.09, p[2]], 0.1, on, { opacity: 0.45 });
+          tag(from, () => ({ kind: "bulb", i: n, on, off: palette.plate[1]! }));
+          n++;
+        }
+      }
+    }
+  }
+
   // ---- low fog creeping between the graves, will-o'-wisps, and leaves falling from the tree
   for (let i = 0; i < 26; i++) {
     const cx = rng.range(-5, 5);
@@ -495,6 +590,13 @@ export function buildHalloween(seed: number, palette: Palette): Splat[] {
     const top = rng.range(3.2, 4.6);
     dot([rng.range(-4.8, -1.8), top, rng.range(-1.8, 0.5)], 0.07, leafColors[i % 4]!, { tall: 0.5 });
     tag(from, () => ({ kind: "leaf", w: rng.next(), top }));
+  }
+  // the first snow of the season drifting down over everything
+  for (let i = 0; i < 60; i++) {
+    const from = splats.length;
+    const top = rng.range(5.5, 7.5);
+    dot([rng.range(-4.2, 4.2), rng.range(0, top), rng.range(-2.4, 2.4)], 0.045, palette.eyeWhite);
+    tag(from, () => ({ kind: "snow", w: rng.next(), top }));
   }
   return splats;
 }
@@ -557,6 +659,14 @@ export function poseHalloween(splats: readonly Splat[], t: number): Splat[] {
         return blink ? { ...s, opacity: 0 } : s;
       case "spider":
         return { ...s, position: [x + Math.sin(t * 0.9) * 0.04 * m.f, y + Math.sin(t * 1.4) * 0.28 * m.f, z] };
+      case "bulb": {
+        const lit = Math.floor(t * 3) % 3 !== m.i % 3 || Math.sin(t * 11 + m.i) > 0.95;
+        return lit ? s : { ...s, color: m.off, opacity: s.opacity * 0.7 };
+      }
+      case "snow": {
+        const a = (t * 0.07 + m.w) % 1;
+        return { ...s, position: [x + Math.sin(a * 14 + m.w * 20) * 0.2, m.top * (1 - a), z + Math.cos(a * 11 + m.w * 7) * 0.12] };
+      }
       case "wisp": {
         const a = t * 0.9 + m.w * 6;
         return { ...s, position: [x + Math.sin(a) * 0.4, y + Math.sin(a * 1.7) * 0.25, z + Math.cos(a) * 0.3] };
