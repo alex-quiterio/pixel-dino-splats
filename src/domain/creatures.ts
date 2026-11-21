@@ -85,7 +85,7 @@ export const velociraptor: Creature = {
 
 export const halloween: Creature = {
   id: "halloween",
-  name: "Halloween Eve",
+  name: "Haunted Graveyard",
   palettes: HALLOWEEN_PALETTES,
   build: buildHalloween,
   pose: poseHalloween,
