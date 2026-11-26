@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/logo.png" width="160" alt="impossible triangle logo" />
+
 # 🦖🦑🦌🐈 pixel splat zoo
 
 **Creatures made of thousands of 3D gaussian splats, rasterised in software at pixel-art resolution.**
@@ -20,6 +22,9 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 
 ### Elephant
 ![savanna elephant turntable](assets/elephant-savanna.png)
+
+### Impossible triangle (the logo; only closes from one angle, spin it to break it)
+![classic penrose triangle](assets/logo.png)
 
 ### Stegosaurus
 ![fern stegosaurus turntable](assets/stegosaurus-fern.png)

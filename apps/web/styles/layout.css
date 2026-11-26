@@ -48,3 +48,5 @@ canvas:active { cursor: grabbing; }
   .picker { flex-direction: row; flex-wrap: wrap; justify-content: center; }
   .picker button { width: auto; }
 }
+
+.logo { display: block; width: 96px; height: 96px; margin: 0 auto 12px; image-rendering: pixelated; }

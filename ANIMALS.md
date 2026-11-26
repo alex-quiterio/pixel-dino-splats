@@ -11,6 +11,7 @@ The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians
 - [x] **Stegosaurus** (back plates, spiked tail swing, grazing head dip)
 - [x] **Velociraptor** (fully feathered with natural barring, folded wing-arms, frond tail, lipped snout, sickle claw tap, blink, nest of eggs)
 - [x] **Haunted graveyard** (hooded wraith with bone hands, wailing spirits rising from graves, clawing hands, open crypt spilling ghost-light, gibbet cage, red-eyed ravens, circling skulls, rotting jack-o'-lanterns, fog)
+- [x] **Impossible triangle** (Penrose beams that only close from one camera angle; also the app logo)
 
 ## Same skeleton, new silhouettes (easy)
 - [ ] **Triceratops**: frill and three horns; wide, low, four legs.

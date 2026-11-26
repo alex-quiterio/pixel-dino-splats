@@ -6,6 +6,7 @@ export async function build(outdir = "dist") {
   const result = await Bun.build({ entrypoints: ["apps/web/main.ts"], outdir, target: "browser", minify: true });
   if (!result.success) throw new Error(result.logs.join("\n"));
   await cp("apps/web/index.html", `${outdir}/index.html`);
+  await cp("apps/web/logo.png", `${outdir}/logo.png`);
   await cp("apps/web/styles", `${outdir}/styles`, { recursive: true });
 }
 
