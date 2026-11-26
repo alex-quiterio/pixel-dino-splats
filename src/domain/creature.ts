@@ -6,6 +6,8 @@ import type { Vec3 } from "@domain/vec3";
 export interface Creature {
   readonly id: string;
   readonly name: string;
+  /** A short, silly line in the creature's voice, shown under the viewer. */
+  readonly quote: string;
   readonly palettes: readonly Palette[];
   build(seed: number, palette: Palette): Splat[];
   /** Pure function of time: same t, same pose. */

@@ -1,8 +1,10 @@
 # 🐾 Future animals
 
+> **Purpose:** a hand-sculpted bestiary of gaussian-splat creatures that doubles as a readable, dependency-free tour of how 3D gaussian splatting works. This file is the wishlist; see the README for the pitch. Every creature also gets a funny one-liner (`quote` on its `Creature`).
+
 The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians → cel-shaded palette ramps → pixel snap. Next up, roughly in order of how much new machinery each one needs.
 
-## Done
+## Done (each one ships with a quote)
 - [x] **T-Rex**
 - [x] **Giant squid in the rain** (rig groups for arms, fins and falling rain)
 - [x] **Mushroom stag** (bark grain, antler mushrooms, drifting spores, glow-orbs)

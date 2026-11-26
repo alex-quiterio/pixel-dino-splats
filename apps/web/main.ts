@@ -22,6 +22,7 @@ let lastY = 0;
 function labels() {
   $("count").textContent = String(scene.splats.length);
   $("name").textContent = `colorway: ${scene.palette.name}`;
+  $("quote").textContent = `“${creature.quote}”`;
   $("title").textContent = `pixel ${creature.name.toLowerCase()} splats`;
   frameEl.dataset.creature = creature.id;
   for (const b of document.querySelectorAll<HTMLButtonElement>("[data-creature]")) {

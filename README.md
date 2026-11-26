@@ -46,6 +46,21 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 
 **🎮 [Live demo →](https://alex-quiterio.github.io/pixel-dino-splats/)** (drag to rotate and tilt, scroll or slide to zoom, arrow keys work too)
 
+## 🎯 Purpose
+
+This project is a playground for learning and showing off **3D gaussian splatting from first principles**. Instead of a GPU pipeline or a trained scene, every creature is *hand-sculpted in code* out of a few thousand soft 3D blobs, then rasterised by a small software renderer with no dependencies. It exists to:
+
+- **Demystify splatting**: the whole pipeline (grow, project, blend, quantise) is a few readable files you can step through.
+- **Make it charming**: crushing the result to a handful of palette colours turns a research technique into pixel art, which keeps the focus on shape and motion.
+- **Be a sandbox for new creatures**: each animal is one file (`build` + `pose` + camera), so adding one is an afternoon of fun, not a framework.
+- **Stay portable**: results export as sprite sheets and standard `.ply` splat files you can open in any 3DGS viewer.
+
+It is also a bestiary with opinions. Each creature has something to say:
+
+| Creature | Quote |
+| --- | --- |
+
+
 ## ✨ Features
 
 - **Real gaussian splatting**: every splat is a 3D gaussian with position, scale, colour and opacity, projected to a 2D conic and alpha-blended back to front.
@@ -66,7 +81,7 @@ bun run cli:export -- --creature squid --seed 1   # sprite sheet + .ply -> out/
 bun run web:build                  # static site -> dist/
 ```
 
-CLI options: `--creature` (`trex` | `squid` | `stag` | `cats` | `elephant` | `stegosaurus` | `dragon` | `velociraptor` | `halloween`), `--seed`, `--size` (px per frame, default 96), `--frames` (default 8), `--scale` (PNG upscale, default 4), `--out`.
+CLI options: `--creature` (`trex` | `squid` | `stag` | `cats` | `elephant` | `stegosaurus` | `dragon` | `velociraptor` | `halloween` | `penrose` | `torus`), `--seed`, `--size` (px per frame, default 96), `--frames` (default 8), `--scale` (PNG upscale, default 4), `--out`.
 
 Checks: `bun test` · `bun run lint` · `bun run typecheck`
 
@@ -82,7 +97,7 @@ Checks: `bun test` · `bun run lint` · `bun run typecheck`
 ## 🗂 Layout
 
 ```
-src/domain          splats, palettes, creatures (trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween) + sculpting helper, projection math (pure)
+src/domain          splats, palettes, creatures (trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus) + sculpting helper, projection math (pure)
 src/application     scene building, pixel renderer, turntable use cases
 src/infrastructure  PNG + PLY encoders
 apps/cli            sprite-sheet / PLY export

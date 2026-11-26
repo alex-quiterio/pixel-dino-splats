@@ -15,6 +15,7 @@ import { buildHalloween, HALLOWEEN_PALETTES, HALLOWEEN_VIEW, poseHalloween } fro
 
 export const trex: Creature = {
   id: "trex",
+  quote: "I have very strong opinions about hugs, and also very short arms.",
   name: "T-Rex",
   palettes: PALETTES,
   build: buildTRex,
@@ -24,6 +25,7 @@ export const trex: Creature = {
 
 export const squid: Creature = {
   id: "squid",
+  quote: "Eight arms, zero umbrellas. It's fine, it's raining on all of us.",
   name: "Squid",
   palettes: SQUID_PALETTES,
   build: buildSquid,
@@ -33,6 +35,7 @@ export const squid: Creature = {
 
 export const stag: Creature = {
   id: "stag",
+  quote: "I didn't choose the mushroom life. The mushrooms chose me, and they pay no rent.",
   name: "Mushroom Stag",
   palettes: STAG_PALETTES,
   build: buildStag,
@@ -42,6 +45,7 @@ export const stag: Creature = {
 
 export const cats: Creature = {
   id: "cats",
+  quote: "We are not fighting. We are discussing who owns the warm spot, loudly.",
   name: "Cat Duo",
   palettes: CAT_PALETTES,
   build: buildCats,
@@ -51,6 +55,7 @@ export const cats: Creature = {
 
 export const elephant: Creature = {
   id: "elephant",
+  quote: "I never forget. Especially who ate my snacks.",
   name: "Elephant",
   palettes: ELEPHANT_PALETTES,
   build: buildElephant,
@@ -60,6 +65,7 @@ export const elephant: Creature = {
 
 export const stegosaurus: Creature = {
   id: "stegosaurus",
+  quote: "My brain is the size of a walnut, but my back looks incredible.",
   name: "Stegosaurus",
   palettes: STEGO_PALETTES,
   build: buildStegosaurus,
@@ -69,6 +75,7 @@ export const stegosaurus: Creature = {
 
 export const dragon: Creature = {
   id: "dragon",
+  quote: "I'm not hoarding gold. I'm just very committed to my collection.",
   name: "Black Dragon",
   palettes: DRAGON_PALETTES,
   build: buildDragon,
@@ -78,6 +85,7 @@ export const dragon: Creature = {
 
 export const velociraptor: Creature = {
   id: "velociraptor",
+  quote: "Clever girl? Please. Clever, fluffy, and extremely good at knocking things off tables.",
   name: "Velociraptor",
   palettes: RAPTOR_PALETTES,
   build: buildVelociraptor,
@@ -87,6 +95,7 @@ export const velociraptor: Creature = {
 
 export const halloween: Creature = {
   id: "halloween",
+  quote: "Don't be scared. Be a little scared. Okay, run, but gracefully.",
   name: "Haunted Graveyard",
   palettes: HALLOWEEN_PALETTES,
   build: buildHalloween,
@@ -96,6 +105,7 @@ export const halloween: Creature = {
 
 export const penrose: Creature = {
   id: "penrose",
+  quote: "This way up! ...or is it? Honestly, I stopped checking.",
   name: "Impossible Triangle",
   palettes: PENROSE_PALETTES,
   build: buildPenrose,
@@ -105,6 +115,7 @@ export const penrose: Creature = {
 
 export const torus: Creature = {
   id: "torus",
+  quote: "Go around in circles long enough and something nice will grow in the middle.",
   name: "Tree of Life Torus",
   palettes: TORUS_PALETTES,
   build: buildTorus,
