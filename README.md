@@ -26,6 +26,9 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 ### Impossible triangle (the logo; only closes from one angle, spin it to break it)
 ![classic penrose triangle](assets/logo.png)
 
+### Tree of life torus (orbs circle the ring)
+![emerald torus turntable](assets/torus-emerald.png)
+
 ### Stegosaurus
 ![fern stegosaurus turntable](assets/stegosaurus-fern.png)
 
