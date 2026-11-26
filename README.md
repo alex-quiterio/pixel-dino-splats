@@ -29,6 +29,9 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 ### Tree of life torus (orbs circle the ring)
 ![emerald torus turntable](assets/torus-emerald.png)
 
+### Möbius strip (an ant walks its one and only side)
+![copper mobius turntable](assets/mobius-copper.png)
+
 ### Stegosaurus
 ![fern stegosaurus turntable](assets/stegosaurus-fern.png)
 
@@ -81,7 +84,7 @@ bun run cli:export -- --creature squid --seed 1   # sprite sheet + .ply -> out/
 bun run web:build                  # static site -> dist/
 ```
 
-CLI options: `--creature` (`trex` | `squid` | `stag` | `cats` | `elephant` | `stegosaurus` | `dragon` | `velociraptor` | `halloween` | `penrose` | `torus`), `--seed`, `--size` (px per frame, default 96), `--frames` (default 8), `--scale` (PNG upscale, default 4), `--out`.
+CLI options: `--creature` (`trex` | `squid` | `stag` | `cats` | `elephant` | `stegosaurus` | `dragon` | `velociraptor` | `halloween` | `penrose` | `torus` | `mobius`), `--seed`, `--size` (px per frame, default 96), `--frames` (default 8), `--scale` (PNG upscale, default 4), `--out`.
 
 Checks: `bun test` · `bun run lint` · `bun run typecheck`
 
@@ -97,7 +100,7 @@ Checks: `bun test` · `bun run lint` · `bun run typecheck`
 ## 🗂 Layout
 
 ```
-src/domain          splats, palettes, creatures (trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus) + sculpting helper, projection math (pure)
+src/domain          splats, palettes, creatures (trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus, mobius) + sculpting helper, projection math (pure)
 src/application     scene building, pixel renderer, turntable use cases
 src/infrastructure  PNG + PLY encoders
 apps/cli            sprite-sheet / PLY export

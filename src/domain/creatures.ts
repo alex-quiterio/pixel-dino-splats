@@ -9,6 +9,7 @@ import { buildDragon, DRAGON_PALETTES, DRAGON_VIEW, poseDragon } from "@domain/d
 import { buildStegosaurus, poseStegosaurus, STEGO_PALETTES, STEGO_VIEW } from "@domain/stegosaurus";
 import { buildPenrose, PENROSE_PALETTES, PENROSE_VIEW, posePenrose } from "@domain/penrose";
 import { buildTorus, poseTorus, TORUS_PALETTES, TORUS_VIEW } from "@domain/torus";
+import { buildMobius, MOBIUS_PALETTES, MOBIUS_VIEW, poseMobius } from "@domain/mobius";
 import { buildTRex } from "@domain/trex";
 import { buildVelociraptor, poseVelociraptor, RAPTOR_PALETTES, RAPTOR_VIEW } from "@domain/velociraptor";
 import { buildHalloween, HALLOWEEN_PALETTES, HALLOWEEN_VIEW, poseHalloween } from "@domain/halloween";
@@ -123,5 +124,15 @@ export const torus: Creature = {
   view: TORUS_VIEW,
 };
 
-export const CREATURES: readonly Creature[] = [trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus];
+export const mobius: Creature = {
+  id: "mobius",
+  name: "Möbius Strip",
+  quote: "Which side am I on? Yes.",
+  palettes: MOBIUS_PALETTES,
+  build: buildMobius,
+  pose: poseMobius,
+  view: MOBIUS_VIEW,
+};
+
+export const CREATURES: readonly Creature[] = [trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus, mobius];
 export const creatureById = (id: string): Creature => CREATURES.find((c) => c.id === id) ?? trex;

@@ -14,6 +14,7 @@ The T-Rex and the squid proved the recipe: ellipsoid shells → seeded gaussians
 - [x] **Velociraptor** (fully feathered with natural barring, folded wing-arms, frond tail, lipped snout, sickle claw tap, blink, nest of eggs)
 - [x] **Haunted graveyard** (hooded wraith with bone hands, wailing spirits rising from graves, clawing hands, open crypt spilling ghost-light, gibbet cage, red-eyed ravens, circling skulls, rotting jack-o'-lanterns, fog)
 - [x] **Impossible triangle** (Penrose beams that only close from one camera angle; also the app logo)
+- [x] **Möbius strip** (one-sided twisted band, with an ant that laps it and ends up "upside down")
 - [x] **Tree of life torus** (standing stone ring, roots and branches grafted into it, orbs circling the rim)
 
 ## Same skeleton, new silhouettes (easy)
