@@ -29,7 +29,8 @@ const BOXES: readonly Box[] = [
   { lo: [L - H, L - H, -H], hi: [L + H, L + H, L + H] },
 ];
 
-const strictlyInside = (p: Vec3, b: Box): boolean => p.every((v, i) => v > b.lo[i]! + 1e-3 && v < b.hi[i]! - 1e-3);
+/** `grow` > 0 also catches faces lying exactly on the box boundary, so coplanar faces don't z-fight. */
+const inside = (p: Vec3, b: Box, grow: number): boolean => p.every((v, i) => v > b.lo[i]! - grow && v < b.hi[i]! + grow);
 
 /**
  * Penrose triangle: three square beams along the x, y and z axes of a cube corner. Seen down the (1,1,1)
@@ -75,7 +76,7 @@ export function buildPenrose(seed: number, palette: Palette): Splat[] {
             q[axis] = fixed;
             q[u] = box.lo[u]! + ((i + rng.range(0.1, 0.9)) / nu) * (box.hi[u]! - box.lo[u]!);
             q[v] = box.lo[v]! + ((j + rng.range(0.1, 0.9)) / nv) * (box.hi[v]! - box.lo[v]!);
-            if (BOXES.some((o, k) => k !== beam && strictlyInside(p, o))) continue;
+            if (BOXES.some((o, k) => k !== beam && inside(p, o, k > beam ? 1e-3 : -1e-3))) continue;
             const w = place(p);
             const s = SPACING * rng.range(0.8, 1.05);
             splats.push({
