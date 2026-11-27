@@ -38,15 +38,22 @@ canvas:active { cursor: grabbing; }
   background: var(--panel);
   border-right: 4px solid var(--ink);
 }
-.picker { display: flex; flex-direction: column; gap: 8px; }
-.picker button { width: 100%; text-align: left; }
-.picker button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.picker, .siblings, .picker section { display: flex; flex-direction: column; gap: 8px; }
+.picker[hidden] { display: none; }
+.picker { margin-top: 12px; }
+.picker section { margin-bottom: 8px; }
+.menu-toggle { width: 100%; text-align: left; margin-bottom: 12px; }
+.group-title { margin: 0; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.picker button, .siblings button { width: 100%; text-align: left; }
+.picker button[aria-pressed="true"], .siblings button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
 .app .stage { flex: 1; min-width: 0; margin: 0; }
 @media (max-width: 640px) {
   .app { flex-direction: column; align-items: stretch; }
   .sidebar { position: static; flex: none; border-right: 0; border-bottom: 4px solid var(--ink); padding: 12px; }
-  .picker { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-  .picker button { width: auto; }
+  .picker, .siblings, .picker section { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .picker section { width: 100%; }
+  .group-title { width: 100%; text-align: center; }
+  .picker button, .siblings button, .menu-toggle { width: auto; }
 }
 
 .logo { display: block; width: 96px; height: 96px; margin: 0 auto 12px; image-rendering: pixelated; }

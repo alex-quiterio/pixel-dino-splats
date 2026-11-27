@@ -14,7 +14,9 @@
     <div class="app">
     <aside class="sidebar">
       <img class="logo" src="./logo.png" width="96" height="96" alt="Pixel Splat Zoo logo: an impossible triangle" />
-      <div id="picker" class="picker" role="group" aria-label="Creature"></div>
+      <button id="menu-toggle" class="menu-toggle" aria-expanded="false" aria-controls="picker">☰ all creatures</button>
+      <div id="siblings" class="siblings" role="group" aria-label="More in this group"></div>
+      <div id="picker" class="picker" role="group" aria-label="Creature" hidden></div>
     </aside>
     <main class="stage">
       <h1 id="title">pixel splats</h1>

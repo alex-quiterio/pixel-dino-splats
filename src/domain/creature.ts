@@ -6,6 +6,8 @@ import type { Vec3 } from "@domain/vec3";
 export interface Creature {
   readonly id: string;
   readonly name: string;
+  /** Picker group, so related creatures sit together (e.g. "Birds"). */
+  readonly category: string;
   /** A short, silly line in the creature's voice, shown under the viewer. */
   readonly quote: string;
   readonly palettes: readonly Palette[];

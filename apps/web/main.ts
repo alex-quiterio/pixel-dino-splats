@@ -1,5 +1,6 @@
 import { buildScene } from "@application/buildScene";
 import { renderScene } from "@application/renderScene";
+import type { Creature } from "@domain/creature";
 import { CREATURES } from "@domain/creatures";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -115,19 +116,53 @@ window.addEventListener("keydown", (e) => {
 });
 
 const picker = $("picker");
-for (const c of [...CREATURES].sort((a, b) => a.name.localeCompare(b.name))) {
+const siblings = $("siblings");
+const toggle = $<HTMLButtonElement>("menu-toggle");
+const byName = [...CREATURES].sort((a, b) => a.name.localeCompare(b.name));
+const categories = [...new Set(byName.map((c) => c.category))].sort();
+
+function choose(c: Creature) {
+  creature = c;
+  seed = 0;
+  scene = buildScene(creature, seed);
+  resetView();
+  setMenu(false);
+  renderSiblings();
+  labels();
+}
+
+const creatureButton = (c: Creature) => {
   const b = document.createElement("button");
   b.textContent = c.name;
   b.dataset.creature = c.id;
-  b.addEventListener("click", () => {
-    creature = c;
-    seed = 0;
-    scene = buildScene(creature, seed);
-    resetView();
-    labels();
-  });
-  picker.append(b);
+  b.addEventListener("click", () => choose(c));
+  return b;
+};
+
+function setMenu(open: boolean) {
+  picker.hidden = !open;
+  toggle.setAttribute("aria-expanded", String(open));
+}
+toggle.addEventListener("click", () => setMenu(picker.hasAttribute("hidden")));
+
+/** Quick switch: the other creatures in the current category, always one tap away. */
+function renderSiblings() {
+  const group = byName.filter((c) => c.category === creature.category);
+  const head = document.createElement("p");
+  head.className = "group-title";
+  head.textContent = creature.category;
+  siblings.replaceChildren(head, ...group.map(creatureButton));
 }
 
+for (const cat of categories) {
+  const section = document.createElement("section");
+  const head = document.createElement("h2");
+  head.className = "group-title";
+  head.textContent = cat;
+  section.append(head, ...byName.filter((c) => c.category === cat).map(creatureButton));
+  picker.append(section);
+}
+
+renderSiblings();
 labels();
 requestAnimationFrame(tick);

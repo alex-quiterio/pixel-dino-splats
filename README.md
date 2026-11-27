@@ -32,6 +32,9 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 ### Möbius strip (an ant walks its one and only side)
 ![copper mobius turntable](assets/mobius-copper.png)
 
+### Eagle & crow (the crow caws, the eagle ignores it, spare feathers drift down)
+![bald eagle and crow turntable](assets/eagle-bald.png)
+
 ### Stegosaurus
 ![fern stegosaurus turntable](assets/stegosaurus-fern.png)
 
@@ -41,7 +44,7 @@ No WebGL. No runtime dependencies. Just soft blobs of light, squeezed into a han
 ### Haunted graveyard
 ![wraith haunted graveyard turntable](assets/halloween-wraith.png)
 
-<sub>more colourways in <a href="assets">assets/</a>: T-Rex (moss, lagoon, grape, ember), squid (coral, violet, kelp), stag (ember, frost, toxic), cats (ginger-black, ginger-grey, butter-black), elephant (savanna, rose, twilight), stegosaurus (fern, dusk, sand), velociraptor (steppe, forest, ash), haunted graveyard (wraith, ectoplasm, bloodmoon)</sub>
+<sub>more colourways in <a href="assets">assets/</a>: T-Rex (moss, lagoon, grape, ember), squid (coral, violet, kelp), stag (ember, frost, toxic), cats (ginger-black, ginger-grey, butter-black), elephant (savanna, rose, twilight), stegosaurus (fern, dusk, sand), velociraptor (steppe, forest, ash), haunted graveyard (wraith, ectoplasm, bloodmoon), eagle & crow (bald, golden, slate)</sub>
 
 </div>
 
@@ -68,10 +71,10 @@ It is also a bestiary with opinions. Each creature has something to say:
 
 - **Real gaussian splatting**: every splat is a 3D gaussian with position, scale, colour and opacity, projected to a 2D conic and alpha-blended back to front.
 - **True pixel art**: output pixels only ever use palette colours, alpha is hard-thresholded, and the silhouette gets a 1px outline. A test enforces it.
-- **Alive**: the T-Rex snarls with a glowing eye and roars; the squid waves its arms in a rainy puddle; the stag sheds drifting spores past pulsing glow-orbs; the cats swish their tails, twitch their ears and blink; the elephant sways its trunk and flaps its ears; the stegosaurus grazes and swings its spiked tail; the velociraptor jerks its head between glances and taps its sickle claw; in the haunted graveyard a hooded wraith looms and reaches, spirits wail up out of their graves, bony hands claw at the dirt, skulls circle, the gibbet cage creaks and the fog rolls. All motion is a pure `pose(splats, t)` function.
+- **Alive**: the T-Rex snarls with a glowing eye and roars; the squid waves its arms in a rainy puddle; the stag sheds drifting spores past pulsing glow-orbs; the cats swish their tails, twitch their ears and blink; the elephant sways its trunk and flaps its ears; the stegosaurus grazes and swings its spiked tail; the velociraptor jerks its head between glances and taps its sickle claw; the eagle turns its head away, flares its wings and screeches while the crow caws, bobs and flicks its wings; in the haunted graveyard a hooded wraith looms and reaches, spirits wail up out of their graves, bony hands claw at the dirt, skulls circle, the gibbet cage creaks and the fog rolls. All motion is a pure `pose(splats, t)` function.
 - **Detailed**: tiger stripes, scale speckle, brow ridges, teeth, claws and slit-pupil eyes.
 - **Colourways** picked by seed, per creature (see above).
-- **Interactive web viewer** (GitHub Pages): pick a creature, drag to rotate and tilt, scroll/slider zoom, arrow keys, reset view, toggle spin, reroll colourways, switch between 48 and 512 px (48 / 64 / 96 / 128 / 192 / 256 / 384 / 512, with a live ms-per-frame readout).
+- **Interactive web viewer** (GitHub Pages): pick a creature from a grouped menu (it folds away once you choose, leaving quick-switch buttons for the rest of that group), drag to rotate and tilt, scroll/slider zoom, arrow keys, reset view, toggle spin, reroll colourways, switch between 48 and 512 px (48 / 64 / 96 / 128 / 192 / 256 / 384 / 512, with a live ms-per-frame readout).
 - **Exports**: turntable sprite-sheet PNG, plus a standard 3D Gaussian Splatting `.ply` you can open in any splat viewer for the non-pixel version.
 - **Deterministic**: same seed, same dino, every time.
 
@@ -84,7 +87,7 @@ bun run cli:export -- --creature squid --seed 1   # sprite sheet + .ply -> out/
 bun run web:build                  # static site -> dist/
 ```
 
-CLI options: `--creature` (`trex` | `squid` | `stag` | `cats` | `elephant` | `stegosaurus` | `dragon` | `velociraptor` | `halloween` | `penrose` | `torus` | `mobius`), `--seed`, `--size` (px per frame, default 96), `--frames` (default 8), `--scale` (PNG upscale, default 4), `--out`.
+CLI options: `--creature` (`trex` | `squid` | `stag` | `cats` | `elephant` | `stegosaurus` | `dragon` | `velociraptor` | `halloween` | `penrose` | `torus` | `mobius` | `eagle`), `--seed`, `--size` (px per frame, default 96), `--frames` (default 8), `--scale` (PNG upscale, default 4), `--out`.
 
 Checks: `bun test` · `bun run lint` · `bun run typecheck`
 
@@ -100,7 +103,7 @@ Checks: `bun test` · `bun run lint` · `bun run typecheck`
 ## 🗂 Layout
 
 ```
-src/domain          splats, palettes, creatures (trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus, mobius) + sculpting helper, projection math (pure)
+src/domain          splats, palettes, creatures (trex, squid, stag, cats, elephant, stegosaurus, dragon, velociraptor, halloween, penrose, torus, mobius, eagle) + sculpting helper, projection math (pure)
 src/application     scene building, pixel renderer, turntable use cases
 src/infrastructure  PNG + PLY encoders
 apps/cli            sprite-sheet / PLY export
